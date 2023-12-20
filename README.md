@@ -1,5 +1,5 @@
 # ai4eosc_uc2
-[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/UC-ai4eosc-psnc-ai4eosc_uc2/master)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/UC-ai4eosc-psnc-ai4eosc_uc2/job/master)
+[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/UC-ai4eosc-psnc-ai4eosc_uc2/test)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/UC-ai4eosc-psnc-ai4eosc_uc2/job/test)
 
 Integrated Plant Protection
 
