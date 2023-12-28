@@ -39,7 +39,7 @@ def _predict(model, device, dataloader):
             predictions = ["sick" if prob.item() > 0.5 else "healthy" for prob in probs]
             res_predictions.extend(predictions)
             res_probs.extend(probs.flat)
-    return res_predictions, res_probs
+    return res_predictions, [float(p) for p in res_probs]
 
 def predict(model, device, file_names,  filemode='local', image_size=512, batch_size=16):
 

@@ -43,10 +43,73 @@ import warnings
 import numpy as np
 import requests
 import confuse
+import torch
 
-from ai4eosc_uc2.models import SmallCNNModel
-from ai4eosc_uc2 import paths, utils, config, test_utils
+from ai4eosc_uc2.models import SmallCNNModel, Unet
+from ai4eosc_uc2 import paths, config, test_utils
 from ai4eosc_uc2.data_utils import mount_nextcloud
+class ConfigLoader:
+    """Load and validate config file using confuse library.
+    """
+    def __init__(self, config_path: str, template: dict, appname: str = 'config'):
+        """Object creator.
+
+        Parameters
+        ----------
+        config_path: str
+            Path to config file.
+        template: dict
+            Validation template.
+        appname: str, optional
+            Application name. 
+        """
+        self.configuration = confuse.Configuration(appname, read=False)
+        self.configuration.set_file(config_path)
+        self.config = self.configuration.get(template)
+        
+    def get_config(self) -> dict:
+        """
+        Returns
+        -------
+        dict
+            Validated config file.
+        """
+        return self.config
+    
+    def dump(self) -> str:
+        """Useful for saving pretty (interpreted) version of yaml config file.
+        Returns
+        -------
+        str
+            Dumped config. 
+        """
+        return self.configuration.dump()
+
+config_template = {
+    'base': {
+        'batch_size': confuse.Integer(), 
+        'channels': confuse.TypeTemplate(list),
+        'crop_scale': confuse.Number(),
+        'epochs': confuse.Integer(),
+        'early_stopping_patience': confuse.Integer(),
+        'experiment': confuse.String(), 
+        'experiment_name': confuse.String(), 
+        'image_size': confuse.Integer(), 
+        'learning_rate': confuse.Number(),
+        'mlflow': confuse.TypeTemplate(bool, default=False), 
+        'mlflow_params': confuse.TypeTemplate(str),
+        'reduce_lr_factor': confuse.Number(),
+        'reduce_lr_patience': confuse.Integer(),
+        'patch_size': confuse.Integer(),
+        'seed': confuse.Integer(), 
+        'shuffle': confuse.TypeTemplate(bool, default=False),
+        'tensorboard': confuse.TypeTemplate(bool, default=False),
+        'healthy_data_path': confuse.String(),
+        'sick_data_path': confuse.String(),
+    }   
+
+}
+
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -83,16 +146,17 @@ def get_metadata():
     return meta
 
 # Mount NextCloud folders (if NextCloud is available)
-try:
-    # mount_nextcloud('rshare:/data/dataset_files', paths.get_splits_dir())
-    mount_nextcloud('rshare:/data/images', paths.get_images_dir())
-    #mount_nextcloud('rshare:/models', paths.get_models_dir())
-except Exception as e:
-    print(e)
+# try:
+#     # mount_nextcloud('rshare:/data/dataset_files', paths.get_splits_dir())
+#     mount_nextcloud('rshare:/rye', paths.get_images_dir())
+#     #mount_nextcloud('rshare:/models', paths.get_models_dir())
+# except Exception as e:
+#     print(f"Nextcloud: {e}")
 
 # Empty model variables for inference (will be loaded the first time we perform inference)
 loaded_ts, loaded_ckpt = None, None
 model, conf,  = None, None
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Additional parameters
 allowed_extensions = set(['png', 'jpg', 'jpeg', 'PNG', 'JPG', 'JPEG']) # allow only certain file extensions
@@ -102,7 +166,7 @@ def load_model(path:str, device, Model_Class = Unet, *args):
     if issubclass(Model_Class, Unet):
         model.load_state_dict(torch.load(path))
     elif issubclass(Model_Class, SmallCNNModel):
-        model.load_state_dict(torch.load(path)['model_state_dict'])
+        model.load_state_dict(torch.load(path, map_location=device)['model_state_dict'])
     else:
         raise ValueError("Invalid model")
     model.eval()
@@ -122,7 +186,7 @@ def load_inference_model(timestamp=None, ckpt_name=None):
     """
     global loaded_ts, loaded_ckpt
     global model, conf
-
+    global device
     # Set the timestamp
     timestamp_list = next(os.walk(paths.get_models_dir()))[1]
     timestamp_list = sorted(timestamp_list)
@@ -140,7 +204,7 @@ def load_inference_model(timestamp=None, ckpt_name=None):
 
     # Set the checkpoint model to use to make the prediction
     ckpt_list = os.listdir(paths.get_checkpoints_dir())
-    ckpt_list = sorted([name for name in ckpt_list if name.endswith('.h5')])
+    ckpt_list = sorted([name for name in ckpt_list if name.endswith('.pt')])
     if not ckpt_list:
         raise Exception(
             "You have no checkpoints in your `./models/{}/ckpts` folder to be used for inference. ".format(timestamp) +
@@ -152,39 +216,17 @@ def load_inference_model(timestamp=None, ckpt_name=None):
             "Invalid checkpoint name: {}. Available checkpoint names are: {}".format(ckpt_name, ckpt_list))
     print('Using CKPT_NAME={}'.format(ckpt_name))
 
-    config_template = {
-        'base': {
-            'batch_size': confuse.Integer(), 
-            'channels': confuse.TypeTemplate(list),
-            'crop_scale': confuse.Number(),
-            'epochs': confuse.Integer(),
-            'early_stopping_patience': confuse.Integer(),
-            'experiment': confuse.String(), 
-            'experiment_name': confuse.String(), 
-            'image_size': confuse.Integer(), 
-            'learning_rate': confuse.Number(),
-            'mlflow': confuse.TypeTemplate(bool, default=False), 
-            'mlflow_params': confuse.TypeTemplate(dict),
-            'reduce_lr_factor': confuse.Number(),
-            'reduce_lr_patience': confuse.Integer(),
-            'patch_size': confuse.Integer(),
-            'seed': confuse.Integer(), 
-            'shuffle': confuse.TypeTemplate(bool, default=False),
-            'tensorboard': confuse.TypeTemplate(bool, default=False),
-            'healthy_data_path': confuse.String(),
-            'sick_data_path': confuse.String(),
-        }   
     
-    }
     # Load training configuration
     conf_path = os.path.join(paths.get_conf_dir(), 'base.yaml')
     with open(conf_path) as f:
-        conf = yaml.load(f, config_template)
+        config_loader = ConfigLoader(conf_path, config_template, 'app_name')
+        conf = config_loader.get_config()
         update_with_saved_conf(conf)
 
     # Load the model
     model = load_model(os.path.join(paths.get_checkpoints_dir(), ckpt_name),
-                    conf['base']['device'],
+                    device,
                     SmallCNNModel,
                     conf['base']['channels']
                     )
@@ -318,7 +360,7 @@ def predict_url(args):
 
     # Make the predictions
     result = test_utils.predict(model=model, 
-                                device=conf["base"]["device"],
+                                device=device,
                                 file_names=args["urls"],
                                 filemode='url',
                                 image_size=512,
@@ -350,7 +392,7 @@ def predict_data(args):
     # Make the predictions
     try:
         result = test_utils.predict(model=model, 
-                                device=conf["base"]["device"],
+                                device=device,
                                 file_names=filenames,
                                 filemode='local',
                                 image_size=512,
