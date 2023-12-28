@@ -1,5 +1,1 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
-!01_rye_clf_aw_1_small
+/default_model/*
