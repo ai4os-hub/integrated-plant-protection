@@ -183,12 +183,22 @@ def prepare_data(healthy_data_path, sick_data_path, image_size=512, batch_size=1
 def mount_nextcloud(frompath, topath):
     """
     Mount a NextCloud folder in your local machine or viceversa.
+
+    Example of usage:
+        mount_nextcloud('rshare:/data/images', 'my_local_image_path')
+
+    Parameters
+    ==========
+    * frompath: str, pathlib.Path
+        Source folder to be copied
+    * topath: str, pathlib.Path
+        Destination folder
     """
-    command = (['rclone', 'copy', frompath, topath])
+    command = ["rclone", "copy", f"{frompath}", f"{topath}"]
     result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = result.communicate()
     if error:
-        warnings.warn("Error while mounting NextCloud: {}".format(error))
+        warnings.warn(f"Error while mounting NextCloud: {error}")
     return output, error
 
 def load_image(filename, filemode='local'):

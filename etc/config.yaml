@@ -5,39 +5,89 @@
 base:
 
   #Hyperparameters
-  batch_size: 32
-  image_size: 512 
-  epochs: 100
-  learning_rate: 0.001
-  channels: [32, 64, 128, 256]
+  batch_size:
+    value: 32
+    type: "int"
+    help: ""
+  image_size: 
+    value: 512
+    type: "int"
+    help: "" 
+  epochs: 
+    value: 10
+    type: "int"
+    help: ""
+  learning_rate: 
+    value: 0.001
+    type: "float"
+    help: ""
+  channels: 
+    value: [32, 64, 128, 256]
+    type: "list"
+    help: ""
 
   #Scheduler parameters
-  early_stopping_patience: 30
+  early_stopping_patience: 
+    value: 30
+    type: "int"
+    help: ""
   # reduce_lr_factor: 0.5
   # reduce_lr_patience: 4
 
-  reduce_lr_factor: 0.4
-  reduce_lr_patience: 8
+  reduce_lr_factor: 
+    value: 0.4
+    type: "float"
+    help: ""
+  reduce_lr_patience: 
+    value: 8
+    type: "int"
+    help: ""
 
 
-  #Transformations
-  patch_size: 256
-  crop_scale: 1.0
+  # #Transformations
+  # patch_size: 256
+  # crop_scale: 1.0
 
   #Tensorboard and MLflow
-  experiment: ai4eosc
+  experiment: 
+    value: ai4eosc
+    type: "str"
+    help: ""
 
-  mlflow: False
+  mlflow: 
+    value: False
+    type: "bool"
+    help: ""
   mlflow_params:
-    test: Test
-  seed: 0
-  shuffle: False
-  tensorboard: True
+    value: "Test"
+    type: "str"
+    help: ""
+  seed: 
+    value: 0
+    type: "int"
+    help: ""
+  shuffle: 
+    value: False
+    type: "bool"
+    help: ""
+  tensorboard: 
+    value: True
+    type: "bool"
+    help: ""
 
   #Datapath
-  experiment_name: 54_beet_edwin_intersection_small
-  healthy_data_path: /srv/data/beet/clf-edwin/healthy_intersection_1
-  sick_data_path: /srv/data/beet/clf-edwin/sick_intersection_1
+  experiment_name: 
+    value: "54_beet_edwin_intersection_small"
+    type: "str"
+    help: ""
+  healthy_data_path: 
+    value: "/srv/data/beet/clf-edwin/healthy_intersection_1"
+    type: "str"
+    help: ""
+  sick_data_path: 
+    value: "/srv/data/beet/clf-edwin/sick_intersection_1"
+    type: "str"
+    help: ""
 
 
 #####################################################
@@ -316,7 +366,7 @@ testing:
       Model timestamp to use for prediction.
 
   ckpt_name:
-    value: "final_model.h5"
+    value: "model_0013.pt"
     type: "str"
     help: >
       Checkpoint inside the timestamp to use for prediction.
