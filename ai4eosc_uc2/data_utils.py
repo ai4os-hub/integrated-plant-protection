@@ -227,6 +227,7 @@ def load_image(filename, filemode='local'):
             if filename.startswith('data:image'):  # base64 encoded string
                 data = base64.b64decode(filename.split(';base64,')[1])
             else:  # normal url
+                
                 data = requests.get(filename).content
             data = np.frombuffer(data, np.uint8)
             image = cv2.imdecode(data, cv2.IMREAD_COLOR)

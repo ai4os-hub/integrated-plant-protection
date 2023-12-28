@@ -289,6 +289,7 @@ def catch_url_error(url_list):
         raise ValueError('Empty query')
 
     for i in url_list:
+        
         if not i.startswith('data:image'):  # don't do the checks for base64 encoded images
 
             # Error catch: Inexistent url
@@ -328,6 +329,10 @@ def warm():
 
 @catch_error
 def predict(**args):
+
+    if args['urls']:
+        args['urls'] = [args['urls']]  # patch until list is available
+        return predict_url(args)
 
     if (not any([args['urls'], args['files']]) or
             all([args['urls'], args['files']])):
@@ -469,6 +474,10 @@ def get_predict_args():
     parser['urls'] = fields.String(required=False,
                                    missing=None,
                                    description="Select an URL of the image you want to classify.")
+    parser['test_parameter'] = fields.String(required=False,
+                                   missing=None,
+                                   description="Select an URL of the image you want to classify.")
+
 
     # missing action="append" --> append more than one url
 
