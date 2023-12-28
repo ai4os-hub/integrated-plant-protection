@@ -145,13 +145,13 @@ def get_metadata():
 
     return meta
 
-# Mount NextCloud folders (if NextCloud is available)
-# try:
-#     # mount_nextcloud('rshare:/data/dataset_files', paths.get_splits_dir())
-#     mount_nextcloud('rshare:/rye', paths.get_images_dir())
-#     #mount_nextcloud('rshare:/models', paths.get_models_dir())
-# except Exception as e:
-#     print(f"Nextcloud: {e}")
+#Mount NextCloud folders (if NextCloud is available)
+try:
+    # mount_nextcloud('rshare:/data/dataset_files', paths.get_splits_dir())
+    mount_nextcloud('rshare:/rye', paths.get_images_dir())
+    #mount_nextcloud('rshare:/models', paths.get_models_dir())
+except Exception as e:
+    print(f"Nextcloud: {e}")
 
 # Empty model variables for inference (will be loaded the first time we perform inference)
 loaded_ts, loaded_ckpt = None, None
