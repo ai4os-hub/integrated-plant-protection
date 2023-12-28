@@ -31,7 +31,7 @@ def prepare_filenames(data_path: str):
     return file_paths
 
 def _prepare_test_data(_paths, filemode='local'):
-    images = [load_image(path, filemode=filemode) for path in paths]
+    images = [load_image(path, filemode=filemode) for path in _paths]
     images = np.asarray(images)
     return images
 
@@ -97,9 +97,10 @@ def _prepare_data(healthy_paths, sick_paths, as_dict = False):
 
 class MyDataset(Dataset):
     def __init__(self, dataset, transform=None, mode="image_label"):
-        if mode == "image_label":
+        self.mode = mode
+        if self.mode == "image_label":
             self.image_data, self.label_data = dataset        
-        elif mode == "image":
+        elif self.mode == "image":
             self.image_data = dataset
         self.transform = transform
     
@@ -112,10 +113,10 @@ class MyDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         
-        if mode == "image_label":
+        if self.mode == "image_label":
             label = self.label_data[idx]
             return image, label
-        elif mode == "image":
+        elif self.mode == "image":
             return image
         
 def prepare_test_data(file_names: List[str], filemode, image_size=512, batch_size = 16) -> Tuple[DataLoader, int]:
