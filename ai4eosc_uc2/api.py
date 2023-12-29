@@ -48,6 +48,8 @@ import torch
 from ai4eosc_uc2.models import SmallCNNModel, Unet
 from ai4eosc_uc2 import paths, config, test_utils
 from ai4eosc_uc2.data_utils import mount_nextcloud
+from ai4eosc_uc2.train_runfile import train_fn
+
 class ConfigLoader:
     """Load and validate config file using confuse library.
     """
@@ -109,8 +111,6 @@ config_template = {
     }   
 
 }
-
-
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
@@ -218,10 +218,9 @@ def load_inference_model(timestamp=None, ckpt_name=None):
 
     
     # Load training configuration
-    conf_path = os.path.join(paths.get_conf_dir(), 'base.yaml')
+    conf_path = os.path.join(paths.get_conf_dir(), 'conf.json')
     with open(conf_path) as f:
-        config_loader = ConfigLoader(conf_path, config_template, 'app_name')
-        conf = config_loader.get_config()
+        conf = json.load(f)
         update_with_saved_conf(conf)
 
     # Load the model
@@ -482,6 +481,40 @@ def get_predict_args():
     # missing action="append" --> append more than one url
 
     return populate_parser(parser, default_conf)
+
+def get_train_args():
+
+    parser = OrderedDict()
+    default_conf = config.CONF
+    default_conf = OrderedDict([('base', default_conf['base']),
+                                ('general', default_conf['general']),
+                                ('model', default_conf['model']),
+                                ('training', default_conf['training']),
+                                ('monitor', default_conf['monitor']),
+                                ('dataset', default_conf['dataset']),
+                                ('augmentation', default_conf['augmentation'])])
+
+    return populate_parser(parser, default_conf)
+
+
+def train(**args):
+    """
+    Train an image classifier
+    """
+    update_with_query_conf(user_args=args)
+    CONF = config.conf_dict
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
+    config.print_conf_table(CONF)
+    train_fn(TIMESTAMP=timestamp, CONF=CONF)
+
+    # Sync with NextCloud folders (if NextCloud is available)
+    try:
+        mount_nextcloud(paths.get_models_dir(), 'rshare:/models')
+    except Exception as e:
+        print(e)
+
+    return {'modelname': timestamp}
+
 
 schema = {
     "status": fields.Str(),

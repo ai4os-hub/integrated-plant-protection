@@ -6,7 +6,7 @@ base:
 
   #Hyperparameters
   batch_size:
-    value: 32
+    value: 16
     type: "int"
     help: ""
   image_size: 
@@ -14,7 +14,7 @@ base:
     type: "int"
     help: "" 
   epochs: 
-    value: 10
+    value: 3
     type: "int"
     help: ""
   learning_rate: 
@@ -77,15 +77,15 @@ base:
 
   #Datapath
   experiment_name: 
-    value: "54_beet_edwin_intersection_small"
+    value: "test"
     type: "str"
     help: ""
   healthy_data_path: 
-    value: "/srv/data/beet/clf-edwin/healthy_intersection_1"
+    value: "/home/ai4eosc_uc2/data/images/dataset1/healthy/images"
     type: "str"
     help: ""
   sick_data_path: 
-    value: "/srv/data/beet/clf-edwin/sick_intersection_1"
+    value: "/home/ai4eosc_uc2/data/images/dataset1/sick/images"
     type: "str"
     help: ""
 

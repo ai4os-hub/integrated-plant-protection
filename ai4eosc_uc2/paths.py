@@ -49,8 +49,8 @@ def get_logs_dir():
 def get_conf_dir():
     return get_timestamped_dir()
 
-# def get_conf_dir():
-#     return os.path.join(get_timestamped_dir(), "conf")
+def get_conf_dir():
+    return os.path.join(get_timestamped_dir())
 
 
 def get_stats_dir():

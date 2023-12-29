@@ -30,12 +30,12 @@ def prepare_filenames(data_path: str):
     file_paths = [os.path.join(data_path, img) for img in os.listdir(data_path)]
     return file_paths
 
-def _prepare_test_data(_paths, filemode='local'):
-    images = [load_image(path, filemode=filemode) for path in _paths]
+def _prepare_test_data(_paths, filemode='local', img_size=512):
+    images = [load_image(path, filemode=filemode, img_size=img_size) for path in _paths]
     images = np.asarray(images)
     return images
 
-def _prepare_data(healthy_paths, sick_paths, as_dict = False):
+def _prepare_data(healthy_paths, sick_paths, as_dict = False, img_size=512):
     def equalize_class(healthy_paths, sick_paths):
         X = np.array([*healthy_paths, *sick_paths]).reshape(-1, 1)
         y = [*np.full(len(healthy_paths), 0), *np.full(len(sick_paths), 1)]
@@ -47,8 +47,8 @@ def _prepare_data(healthy_paths, sick_paths, as_dict = False):
         sick_paths_resampled = [_x for _x, _class in zip(X_resampled, y_resampled) if _class == 1]
         return healthy_paths_resampled, sick_paths_resampled
         
-    def prepare_data_by_class(paths: list, labels_value, split_part = 0.9):
-        images = [load_image(path, filemode='local') for path in paths]
+    def prepare_data_by_class(paths: list, labels_value, img_size, split_part = 0.9 ):
+        images = [load_image(path, filemode='local',img_size=img_size) for path in paths]
         images = np.asarray(images)
         np.random.shuffle(images)
 
@@ -75,8 +75,8 @@ def _prepare_data(healthy_paths, sick_paths, as_dict = False):
         return images, labels
         
     healthy_paths, sick_paths = equalize_class(healthy_paths, sick_paths)
-    h_images_train, h_images_test, h_labels_train, h_labels_test = prepare_data_by_class(healthy_paths, labels_value=0)
-    s_images_train, s_images_test, s_labels_train, s_labels_test = prepare_data_by_class(sick_paths, labels_value=1)
+    h_images_train, h_images_test, h_labels_train, h_labels_test = prepare_data_by_class(healthy_paths, labels_value=0, img_size=img_size)
+    s_images_train, s_images_test, s_labels_train, s_labels_test = prepare_data_by_class(sick_paths, labels_value=1, img_size=img_size)
 
     images_train, labels_train = concatenate_data_part(h_images_train, s_images_train, h_labels_train, s_labels_train)
     images_test, labels_test = concatenate_data_part(h_images_test, s_images_test, h_labels_test, s_labels_test)
@@ -120,7 +120,7 @@ class MyDataset(Dataset):
             return image
         
 def prepare_test_data(file_names: List[str], filemode, image_size=512, batch_size = 16) -> Tuple[DataLoader, int]:
-    images = _prepare_test_data(file_names, filemode=filemode)    
+    images = _prepare_test_data(file_names, filemode=filemode,img_size=image_size)    
     test_transform = transforms.Compose([transforms.ToPILImage(),
                                         #transforms.RandomHorizontalFlip(),
                                         #transforms.RandomVerticalFlip(),
@@ -138,7 +138,7 @@ def prepare_test_data(file_names: List[str], filemode, image_size=512, batch_siz
 def prepare_data(healthy_data_path, sick_data_path, image_size=512, batch_size=16):
     healthy_paths = prepare_filenames(healthy_data_path)
     sick_paths = prepare_filenames(sick_data_path)
-    images_train, images_val, images_test, labels_train, labels_val, labels_test = _prepare_data(healthy_paths, sick_paths)
+    images_train, images_val, images_test, labels_train, labels_val, labels_test = _prepare_data(healthy_paths, sick_paths, img_size=image_size)
     data = {'train': {'images': images_train, 'labels': labels_train}, 
             'val': {'images': images_val, 'labels': labels_val}, 
             'test': {'images': images_val, 'labels': labels_val}}
@@ -172,8 +172,8 @@ def prepare_data(healthy_data_path, sick_data_path, image_size=512, batch_size=1
         
         dataloaders[subset] = DataLoader(dataset, 
                                         batch_size = batch_size, 
-                                        num_workers = 4) 
-        data_len[subset] = len(self.dataloaders[subset])
+                                        num_workers = 0) 
+        data_len[subset] = len(dataloaders[subset])
     
     return dataloaders, data_len
 
@@ -201,7 +201,7 @@ def mount_nextcloud(frompath, topath):
         warnings.warn(f"Error while mounting NextCloud: {error}")
     return output, error
 
-def load_image(filename, filemode='local'):
+def load_image(filename, filemode='local', img_size=512):
     """
     Function to load a local image path (or an url) into a numpy array.
 
@@ -240,6 +240,7 @@ def load_image(filename, filemode='local'):
         raise ValueError('Invalid value for filemode.')
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # change from default BGR OpenCV format to Python's RGB format
+    image = cv2.resize(image, (int(img_size), int(img_size)))
     return image
 
 def json_friendly(d):
