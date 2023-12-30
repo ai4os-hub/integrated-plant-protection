@@ -118,8 +118,36 @@ class MyDataset(Dataset):
             return image, label
         elif self.mode == "image":
             return image
+
+class PreprocessImageDataset(Dataset):
+    def __init__(self, dataset, transform=None):
+        self.image_data, self.paths_img_files = dataset
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.paths_img_files)
+
+    def __getitem__(self, idx):
+        img_path = self.paths_img_files[idx]
+        image = self.image_data[idx]
+        if self.transform:
+            image = self.transform(image)
+        return image, img_path
+
+def prepare_preprocess_data(file_names: List[str], image_size=512, batch_size = 16, num_workers=0) -> Tuple[DataLoader, int]:
+    images = _prepare_test_data(file_names, filemode='local',img_size=image_size)    
+    test_transform = transforms.Compose([transforms.ToPILImage(),
+                                        transforms.Resize((image_size, image_size)),
+                                        transforms.ToTensor()])
+
+    dataset = PreprocessImageDataset((images, file_names), test_transform)
+    dataloader = DataLoader(dataset, 
+                            batch_size = batch_size, 
+                            num_workers = num_workers)
+    
+    return dataloader, len(dataloader)
         
-def prepare_test_data(file_names: List[str], filemode, image_size=512, batch_size = 16) -> Tuple[DataLoader, int]:
+def prepare_test_data(file_names: List[str], filemode, image_size=512, batch_size = 16, num_workers=0) -> Tuple[DataLoader, int]:
     images = _prepare_test_data(file_names, filemode=filemode,img_size=image_size)    
     test_transform = transforms.Compose([transforms.ToPILImage(),
                                         #transforms.RandomHorizontalFlip(),
@@ -130,12 +158,12 @@ def prepare_test_data(file_names: List[str], filemode, image_size=512, batch_siz
     dataset = MyDataset(images, test_transform, mode="image")
     dataloader = DataLoader(dataset, 
                             batch_size = batch_size, 
-                            num_workers = 4)
+                            num_workers = num_workers)
     
     return dataloader, len(dataloader)
 
 
-def prepare_data(healthy_data_path, sick_data_path, image_size=512, batch_size=16):
+def prepare_data(healthy_data_path, sick_data_path, image_size=512, batch_size=16, num_workers=0):
     healthy_paths = prepare_filenames(healthy_data_path)
     sick_paths = prepare_filenames(sick_data_path)
     images_train, images_val, images_test, labels_train, labels_val, labels_test = _prepare_data(healthy_paths, sick_paths, img_size=image_size)
@@ -172,7 +200,7 @@ def prepare_data(healthy_data_path, sick_data_path, image_size=512, batch_size=1
         
         dataloaders[subset] = DataLoader(dataset, 
                                         batch_size = batch_size, 
-                                        num_workers = 0) 
+                                        num_workers = num_workers) #TODO
         data_len[subset] = len(dataloaders[subset])
     
     return dataloaders, data_len

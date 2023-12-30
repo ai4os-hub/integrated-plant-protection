@@ -164,7 +164,7 @@ allowed_extensions = set(['png', 'jpg', 'jpeg', 'PNG', 'JPG', 'JPEG']) # allow o
 def load_model(path:str, device, Model_Class = Unet, *args):
     model = Model_Class(*args)
     if issubclass(Model_Class, Unet):
-        model.load_state_dict(torch.load(path))
+        model.load_state_dict(torch.load(path, map_location=device))
     elif issubclass(Model_Class, SmallCNNModel):
         model.load_state_dict(torch.load(path, map_location=device)['model_state_dict'])
     else:
@@ -227,7 +227,7 @@ def load_inference_model(timestamp=None, ckpt_name=None):
     model = load_model(os.path.join(paths.get_checkpoints_dir(), ckpt_name),
                     device,
                     SmallCNNModel,
-                    conf['base']['channels']
+                    conf['constants']['channels']
                     )
 
     # Set the model as loaded
@@ -362,13 +362,21 @@ def predict_url(args):
                              ckpt_name=conf['testing']['ckpt_name'])
         conf = config.conf_dict
 
+    model_unet = None
+    if conf['base']['use_preprocess_model'] != "":
+        model_path = os.path.join(paths.get_preprocess_models_dir(), conf['base']['use_preprocess_model'])
+        if Path(model_path).exists():
+            model_unet = load_model(model_path, device, Unet)
+    
     # Make the predictions
     result = test_utils.predict(model=model, 
+                                model_unet=model_unet,
                                 device=device,
                                 file_names=args["urls"],
                                 filemode='url',
-                                image_size=512,
-                                batch_size=16
+                                image_size=conf['base']['image_size'],
+                                batch_size=conf['base']['batch_size'],
+                                num_workers=conf['constants']['num_workers']
                                 )
     return result
 
@@ -393,14 +401,21 @@ def predict_data(args):
     # Create a list with the path to the images
     filenames = [f.filename for f in args['files']]
 
+    model_unet = None
+    if conf['base']['use_preprocess_model'] != "":
+        model_path = os.path.join(paths.get_preprocess_models_dir(), conf['base']['use_preprocess_model'])
+        if Path(model_path).exists():
+            model_unet = load_model(model_path, device, Unet)
     # Make the predictions
     try:
-        result = test_utils.predict(model=model, 
+        result = test_utils.predict(model=model,
+                                model_unet=model_unet, 
                                 device=device,
                                 file_names=filenames,
                                 filemode='local',
-                                image_size=512,
-                                batch_size=16
+                                image_size=conf['base']['image_size'],
+                                batch_size=conf['base']['batch_size'],
+                                num_workers=conf['constants']['num_workers']
                                 )
     finally:
         for f in filenames:
@@ -473,9 +488,9 @@ def get_predict_args():
     parser['urls'] = fields.String(required=False,
                                    missing=None,
                                    description="Select an URL of the image you want to classify.")
-    parser['test_parameter'] = fields.String(required=False,
-                                   missing=None,
-                                   description="Select an URL of the image you want to classify.")
+    # parser['test_parameter'] = fields.String(required=False,
+    #                                missing=None,
+    #                                description="Select an URL of the image you want to classify.")
 
 
     # missing action="append" --> append more than one url
@@ -487,12 +502,20 @@ def get_train_args():
     parser = OrderedDict()
     default_conf = config.CONF
     default_conf = OrderedDict([('base', default_conf['base']),
-                                ('general', default_conf['general']),
-                                ('model', default_conf['model']),
-                                ('training', default_conf['training']),
-                                ('monitor', default_conf['monitor']),
-                                ('dataset', default_conf['dataset']),
-                                ('augmentation', default_conf['augmentation'])])
+                                ('general', default_conf['general'])
+                            ])
+
+
+    use_preprocess_model = default_conf['base']['use_preprocess_model']
+    use_preprocess_model_list = [x for x in os.listdir(paths.get_preprocess_models_dir()) if x.endswith(".pth")]
+    print(f"\n\n\n\n { use_preprocess_model_list}")
+    use_preprocess_model_list = sorted(use_preprocess_model_list)
+    use_preprocess_model_list.insert(0,'')
+    if not use_preprocess_model_list:
+        use_preprocess_model['value'] = ''
+    else:
+        use_preprocess_model['value'] = ''
+        use_preprocess_model['choices'] = use_preprocess_model_list
 
     return populate_parser(parser, default_conf)
 

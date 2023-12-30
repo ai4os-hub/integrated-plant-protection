@@ -38,24 +38,6 @@ def check_conf(conf=CONF):
                 if (g_val['range'][1] != 'None') and (g_val['range'][1] < g_val['value']):
                     raise ValueError('The selected value for {} is higher than the maximal possible value.'.format(g_key))
 
-    # Check augmentation dict
-    for d_name in ['train_mode', 'val_mode']:
-        d = conf['augmentation'][d_name]['value']
-
-        if (d is None) or (not d):
-            continue
-
-        for k in ['h_flip', 'v_flip', 'stretch', 'crop', 'zoom', 'blur', 'pixel_noise', 'pixel_sat', 'cutout', 'rot']:
-            if type(d[k]) is not float:
-                raise TypeError('The type of the {} key in the {} augmentation dict must be float.'.format(k, d_name))
-
-            if not (0 <= d[k] <= 1):
-                raise TypeError('The {} key in the {} augmentation dict must be in the [0, 1] range.'.format(k, d_name))
-
-        if type(d['rot_lim']) is not int:
-            raise TypeError('The {} key in the {} augmentation dict must be an int.'.format('rot_lim', d_name))
-
-
 check_conf()
 
 

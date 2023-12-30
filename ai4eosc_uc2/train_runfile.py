@@ -15,11 +15,13 @@ from pathlib import Path
 from contextlib import nullcontext
 import multiprocessing as mp
 import click
+import shutil
 from tqdm import tqdm
 from glob import glob
 
 import mlflow.pytorch
-
+import subprocess
+from multiprocessing import Process
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader
@@ -30,7 +32,21 @@ from torchsummary import summary
 
 
 from ai4eosc_uc2.models import SmallCNNModel, Unet
-from ai4eosc_uc2 import utils
+from ai4eosc_uc2 import utils, paths
+
+from ai4eosc_uc2.test_utils import save_intersection
+
+def load_model(path:str, device, Model_Class = Unet, *args):
+    model = Model_Class(*args)
+    if issubclass(Model_Class, Unet):
+        model.load_state_dict(torch.load(path, map_location=device))
+    elif issubclass(Model_Class, SmallCNNModel):
+        model.load_state_dict(torch.load(path, map_location=device)['model_state_dict'])
+    else:
+        raise ValueError("Invalid model")
+    model.eval()
+    model.to(device)
+    return model
 
 def save_ckpt(main_metric_best_flag, last_epoch_flag, save_path, current_epoch, model, optimizer, loss_values):
     if main_metric_best_flag or last_epoch_flag:
@@ -79,6 +95,12 @@ def calculate_metrics(subset: str, y_true: torch.Tensor, y_pred: torch.Tensor, m
         metrics_values[subset][metric_name]['last'] = value
         metrics_values[subset][metric_name]['epochs'][current_epoch].append(value.item())
 
+def launch_tensorboard(port, logdir):
+    subprocess.call(['tensorboard',
+                     '--logdir', '{}'.format(logdir),
+                     '--port', '{}'.format(port),
+                     '--host', '0.0.0.0'])
+
 def train_fn(TIMESTAMP, CONF):
 
     paths.timestamp = TIMESTAMP
@@ -95,7 +117,7 @@ def train_fn(TIMESTAMP, CONF):
     CONF['base']['is_mlflow'] = CONF['base']['mlflow']
     CONF['base']['is_tensorboard'] = CONF['base']['tensorboard']
 
-    model = SmallCNNModel(CONF['base']['channels'])
+    model = SmallCNNModel(CONF['constants']['channels'])
     random.seed(CONF['base']['seed'])
     torch.manual_seed(CONF['base']['seed'])
     np.random.seed(CONF['base']['seed'])
@@ -112,8 +134,15 @@ def train_fn(TIMESTAMP, CONF):
     save_path = paths.get_timestamped_dir()
     print('Save path: ', save_path)
 
+
     utils.save_conf(CONF)
-    
+    if CONF['base']['is_tensorboard']:
+        port = os.getenv('monitorPORT', 6006)
+        port = int(port) if len(str(port)) >= 4 else 6006
+        subprocess.run(['fuser', '-k', '{}/tcp'.format(port)])  # kill any previous process in that port
+        p = Process(target=launch_tensorboard, args=(port, paths.get_logs_dir()), daemon=True)
+        p.start()
+
     if CONF['base']['is_mlflow']:
         print(os.environ['MLFLOW_TRACKING_URI'])
         mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
@@ -130,8 +159,43 @@ def train_fn(TIMESTAMP, CONF):
         writer = SummaryWriter(os.path.join(save_path,'tensorboard'))
 
     ##DATA
-    healthy_paths = CONF['base']['healthy_data_path']
-    sick_paths = CONF['base']['sick_data_path']
+    if CONF['base']['use_preprocess_model'] == "":
+        healthy_paths = CONF['base']['healthy_data_path']
+        sick_paths = CONF['base']['sick_data_path']
+    else:
+        model_path = os.path.join(paths.get_preprocess_models_dir(), CONF['base']['use_preprocess_model'])
+        model_unet = load_model(model_path, device, Unet)
+        
+        h_output_path = os.path.join(os.path.join("/", *CONF['base']['healthy_data_path'].split("/")[:-1]), 'healthy_intersection')
+        if Path(h_output_path).exists():
+            shutil.rmtree(h_output_path)
+        print(f"{h_output_path} creating...")
+        save_intersection(
+            input_dir=CONF['base']['healthy_data_path'], 
+            output_dir=h_output_path, 
+            device=device,
+            model=model_unet,
+            image_size=CONF['base']['image_size'],
+            batch_size=CONF['base']['batch_size'],
+            num_workers=CONF['constants']['num_workers']
+        )
+
+        s_output_path = os.path.join(os.path.join("/", *CONF['base']['sick_data_path'].split("/")[:-1]), 'sick_intersection')
+        if Path(s_output_path).exists():
+            shutil.rmtree(s_output_path)
+        print(f"{s_output_path} creating...")
+        save_intersection(
+            input_dir=CONF['base']['sick_data_path'], 
+            output_dir=s_output_path, 
+            device=device,
+            model=model_unet,
+            image_size=CONF['base']['image_size'],
+            batch_size=CONF['base']['batch_size'],
+            num_workers=CONF['constants']['num_workers']
+        )
+        print("\n\nPreprocess finished")
+        healthy_paths = h_output_path
+        sick_paths = s_output_path
 
     dataloaders, data_len = prepare_data(
         healthy_paths,

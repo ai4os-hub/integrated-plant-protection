@@ -18,13 +18,13 @@ def get_base_dir():
         return os.path.abspath(os.path.join(homedir, base_dir))
 
 
+
 def get_images_dir():
-    img_dir = CONF['general']['images_directory']
+    img_dir = CONF['constants']['images_directory']
     if os.path.isabs(img_dir):
         return img_dir
     else:
         return os.path.abspath(os.path.join(homedir, img_dir))
-
 
 def get_splits_dir():
     return os.path.join(get_base_dir(), "data", "dataset_files")
@@ -32,6 +32,9 @@ def get_splits_dir():
 
 def get_models_dir():
     return os.path.join(get_base_dir(), "models")
+
+def get_preprocess_models_dir():
+    return os.path.join(get_base_dir(), "preprocess_models")
 
 
 def get_timestamped_dir():
@@ -43,14 +46,13 @@ def get_checkpoints_dir():
 
 
 def get_logs_dir():
-    return os.path.join(get_timestamped_dir(), "logs")
+    return os.path.join(get_timestamped_dir(), "tensorboard")
+
+
 
 
 def get_conf_dir():
-    return get_timestamped_dir()
-
-def get_conf_dir():
-    return os.path.join(get_timestamped_dir())
+    return os.path.join(get_timestamped_dir(), "conf")
 
 
 def get_stats_dir():
@@ -67,9 +69,8 @@ def get_predictions_dir():
 
 def get_dirs():
     return {'base dir': get_base_dir(),
-            'images dir': get_images_dir(),
-            'data splits dir': get_splits_dir(),
             'models_dir': get_models_dir(),
+            'preprocess_models_dir': get_preprocess_models_dir(),
             'timestamped dir': get_timestamped_dir(),
             'logs dir': get_logs_dir(),
             'checkpoints dir': get_checkpoints_dir(),
