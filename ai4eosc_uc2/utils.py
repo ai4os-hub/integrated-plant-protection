@@ -1,3 +1,16 @@
+"""
+Date: September 2018
+Author: Ignacio Heredia
+Email: iheredia@ifca.unican.es
+Github: ignacioheredia
+"""
+
+"""
+Date: December 2023
+Modifier: ai4eosc-pscn
+Github: ai4eosc-pscn
+"""
+
 import os
 import subprocess
 import json
