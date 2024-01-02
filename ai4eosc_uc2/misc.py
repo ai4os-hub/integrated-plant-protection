@@ -2,6 +2,7 @@
 This file gathers some functions that have proven to be useful
 across projects. They are not strictly need for integration
 but users might want nevertheless to take advantage from them.
+
 """
 
 from functools import wraps

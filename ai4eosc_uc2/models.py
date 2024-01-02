@@ -1,3 +1,9 @@
+"""
+Date: December 2023
+Author: Jędrzej Smok 
+Email: jsmok@man.poznan.pl
+Github: ai4eosc-psnc
+"""
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from abc import abstractmethod
 

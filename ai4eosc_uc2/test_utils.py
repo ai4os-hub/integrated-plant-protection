@@ -1,3 +1,10 @@
+"""
+Date: December 2023
+Author: Jędrzej Smok 
+Email: jsmok@man.poznan.pl
+Github: ai4eosc-psnc
+"""
+
 import os
 import threading
 from multiprocessing import Pool

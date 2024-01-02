@@ -1,5 +1,12 @@
+
+
 # -*- coding: utf-8 -*-
 """
+Date: December 2023
+Author: Jędrzej Smok (based on code from Ignacio Heredia)
+Email: jsmok@man.poznan.pl
+Github: ai4eosc-psnc
+
 Functions to integrate your model with the DEEPaaS API.
 It's usually good practice to keep this file minimal, only performing the interfacing
 tasks. In this way you don't mix your true code with DEEPaaS code and everything is

@@ -7,7 +7,8 @@ Github: ignacioheredia
 
 """
 Date: December 2023
-Modifier: ai4eosc-pscn
+Modifier: Jędrzej Smok
+Email: jsmok@man.poznan.pl
 Github: ai4eosc-pscn
 """
 
