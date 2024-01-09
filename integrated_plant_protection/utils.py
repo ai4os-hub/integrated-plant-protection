@@ -18,7 +18,7 @@ import json
 from multiprocessing import Process
 import numpy as np
 
-from integrated-plant-protection import paths
+from integrated_plant_protection import paths
 
 def create_dir_tree():
     """

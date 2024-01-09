@@ -33,7 +33,7 @@ module [2].
 from pathlib import Path
 import pkg_resources
 
-from integrated-plant-protection.misc import _catch_error
+from integrated_plant_protection.misc import _catch_error
 import base64, json, math, yaml
 from random import random
 import time
@@ -52,10 +52,10 @@ import requests
 import confuse
 import torch
 
-from integrated-plant-protection.models import SmallCNNModel, Unet
-from integrated-plant-protection import paths, config, test_utils
-from integrated-plant-protection.data_utils import mount_nextcloud
-from integrated-plant-protection.train_runfile import train_fn
+from integrated_plant_protection.models import SmallCNNModel, Unet
+from integrated_plant_protection import paths, config, test_utils
+from integrated_plant_protection.data_utils import mount_nextcloud
+from integrated_plant_protection.train_runfile import train_fn
 
 class ConfigLoader:
     """Load and validate config file using confuse library.

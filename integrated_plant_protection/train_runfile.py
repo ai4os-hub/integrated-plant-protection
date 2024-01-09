@@ -12,8 +12,8 @@ from datetime import datetime
 
 import numpy as np
 import copy
-from integrated-plant-protection.data_utils import prepare_data, prepare_filenames, json_friendly
-from integrated-plant-protection import paths, config, utils
+from integrated_plant_protection.data_utils import prepare_data, prepare_filenames, json_friendly
+from integrated_plant_protection import paths, config, utils
 
 import sys
 import shutil
@@ -38,10 +38,10 @@ import torchmetrics.functional as metrics_F
 from torchsummary import summary
 
 
-from integrated-plant-protection.models import SmallCNNModel, Unet
-from integrated-plant-protection import utils, paths
+from integrated_plant_protection.models import SmallCNNModel, Unet
+from integrated_plant_protection import utils, paths
 
-from integrated-plant-protection.test_utils import save_intersection
+from integrated_plant_protection.test_utils import save_intersection
 
 def load_model(path:str, device, Model_Class = Unet, *args):
     model = Model_Class(*args)

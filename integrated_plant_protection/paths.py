@@ -15,7 +15,7 @@ Github: ai4eosc-pscn
 import os.path
 from datetime import datetime
 
-from integrated-plant-protection import config
+from xd import config
 
 
 homedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
