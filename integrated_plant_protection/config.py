@@ -10,7 +10,7 @@ Github: ignacioheredia
 Date: December 2023
 Modifier: Jędrzej Smok
 Email: jsmok@man.poznan.pl
-Github: ai4eosc-pscn
+Github: ai4eosc-psnc
 """
 
 import os

@@ -33,7 +33,6 @@ module [2].
 from pathlib import Path
 import pkg_resources
 
-from integrated_plant_protection.misc import _catch_error
 import base64, json, math, yaml
 from random import random
 import time
@@ -43,7 +42,7 @@ import builtins
 from collections import OrderedDict
 from datetime import datetime
 from functools import wraps
-import os
+import os, sys
 import re
 import warnings
 
@@ -52,6 +51,8 @@ import requests
 import confuse
 import torch
 
+
+from integrated_plant_protection.misc import _catch_error
 from integrated_plant_protection.models import SmallCNNModel, Unet
 from integrated_plant_protection import paths, config, test_utils
 from integrated_plant_protection.data_utils import mount_nextcloud

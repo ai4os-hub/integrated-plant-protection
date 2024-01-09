@@ -9,13 +9,13 @@ Github: ignacioheredia
 Date: December 2023
 Modifier: Jędrzej Smok
 Email: jsmok@man.poznan.pl
-Github: ai4eosc-pscn
+Github: ai4eosc-psnc
 """
 
 import os.path
 from datetime import datetime
 
-from xd import config
+from integrated_plant_protection import config
 
 
 homedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
