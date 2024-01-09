@@ -31,7 +31,7 @@ from torchvision import transforms
 from sklearn.model_selection import StratifiedShuffleSplit
 from imblearn.under_sampling import RandomUnderSampler
 
-from ai4eosc_uc2.data_utils import prepare_test_data, prepare_preprocess_data
+from integrated-plant-protection.data_utils import prepare_test_data, prepare_preprocess_data
 
 def _predict(model,model_unet, device, dataloader):
     res_predictions = []

@@ -75,11 +75,11 @@ base:
     type: "str"
     help: ""
   healthy_data_path: 
-    value: "/home/ai4eosc_uc2/data/images/dataset1/healthy/images"
+    value: "/home/integrated-plant-protection/data/images/dataset1/healthy/images"
     type: "str"
     help: ""
   sick_data_path: 
-    value: "/home/ai4eosc_uc2/data/images/dataset1/sick/images"
+    value: "/home/integrated-plant-protection/data/images/dataset1/sick/images"
     type: "str"
     help: ""
 

@@ -12,8 +12,8 @@ pipeline {
     environment {
         author_name = "PSNC WODR"
         author_email = "support@kiwi.psnc.pl"
-        app_name = "ai4eosc_uc2"
-        job_location = "Pipeline-as-code/DEEP-OC-org/UC-ai4eosc-psnc-DEEP-OC-ai4eosc_uc2/${env.BRANCH_NAME}"
+        app_name = "integrated-plant-protection"
+        job_location = "Pipeline-as-code/DEEP-OC-org/UC-ai4eosc-psnc-DEEP-OC-integrated-plant-protection/${env.BRANCH_NAME}"
     }
 
     stages {

@@ -12,7 +12,7 @@ you make to the code.
 
 import unittest
 
-import ai4eosc_uc2.api as api
+import integrated-plant-protection.api as api
 
 
 class TestModelMethods(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestModelMethods(unittest.TestCase):
         """
         self.assertEqual(
             self.meta["name"].lower().replace("-", "_"),
-            "ai4eosc_uc2".lower().replace("-", "_"),
+            "integrated-plant-protection".lower().replace("-", "_"),
         )
         self.assertEqual(
             self.meta["author"].lower(), "PSNC WODR".lower()
