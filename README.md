@@ -1,9 +1,9 @@
 # integrated_plant_protection
-[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/UC-ai4eosc-psnc-integrated_plant_protection/master)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/UC-ai4eosc-psnc-integrated_plant_protection/job/master)
+[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/)
 
 Integrated Plant Protection
 
-To launch it, first install the package then run [deepaas](https://github.com/indigo-dc/DEEPaaS):
+To launch it, first install the package then run [deepaas](https://github.com/ai4os/DEEPaaS):
 ```bash
 git clone https://github.com/ai4eosc-psnc/integrated_plant_protection
 cd integrated_plant_protection
