@@ -11,21 +11,17 @@
 # [!] Note: For the Jenkins CI/CD pipeline, input args are defined inside the
 # Jenkinsfile, not here!
 
-ARG tag=2.1.2
+ARG tag=2.1.2-cuda12.1-cudnn8-runtime
 
 # Base image, e.g. tensorflow/tensorflow:2.9.1
-FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+FROM pytorch/pytorch:${tag}
 
 LABEL maintainer='PSNC WODR'
 LABEL version='0.0.1'
 # Integrated Plant Protection
 
 # What user branch to clone [!]
-ARG branch=master
-
-# If to install JupyterLab
-ARG jlab=true
-
+ARG branch=main
 # Install Ubuntu packages
 # - gcc is needed in Pytorch images because deepaas installation might break otherwise (see docs) (it is already installed in tensorflow images)
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -61,32 +57,29 @@ RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb && \
 
 ENV RCLONE_CONFIG=/srv/.rclone/rclone.conf
 
-# Install deep-start script
-# * allows to run shorter command "deep-start"
-# * allows to install jupyterlab or code-server (vscode),
-#   if requested during container creation
-RUN git clone https://github.com/deephdc/deep-start /srv/.deep-start && \
+# Initialization scripts
+# deep-start can install JupyterLab or VSCode if requested
+RUN git clone https://github.com/ai4os/deep-start /srv/.deep-start && \
     ln -s /srv/.deep-start/deep-start.sh /usr/local/bin/deep-start
 
 # Necessary for the Jupyter Lab terminal
 ENV SHELL /bin/bash
 
 # Install user app
-
 RUN apt-get update && apt-get  -y --no-install-recommends install libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 unzip psmisc
 
-RUN git clone -b $branch --depth 1 https://github.com/ai4eosc-psnc/integrated_plant_protection && \
-    cd  integrated_plant_protection && \
+RUN git clone -b $branch --depth 1 https://github.com/ai4os-hub/integrated-plant-protection && \
+    cd  integrated-plant-protection && \
     pip3 install --no-cache-dir -e . && \
     cd ..
     
-RUN cd integrated_plant_protection && \
+RUN cd integrated-plant-protection && \
     curl -o tmp.zip https://share.services.ai4os.eu/index.php/s/9MN2Zekf3sgisWJ/download  && \
     unzip tmp.zip && \
     cp -r public/* . && \
     rm tmp.zip public -r 
 
-# Open ports: DEEPaaS (5000), Monitoring (6006), Jupyter (8888)
+# Open ports (deepaas, monitoring, ide)
 EXPOSE 5000 6006 8888
 
 # Launch deepaas
