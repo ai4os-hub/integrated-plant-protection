@@ -1,5 +1,3 @@
-
-
 # -*- coding: utf-8 -*-
 """
 Date: December 2023
@@ -26,8 +24,8 @@ For example:
 To start populating this file, take a look at the docs [1] and at a canonical exemplar
 module [2].
 
-[1]: https://docs.deep-hybrid-datacloud.eu/
-[2]: https://github.com/deephdc/demo_app
+[1]: https://docs.ai4os.eu/
+[2]: https://github.com/ai4os-hub/ai4os-demo-app (previously https://github.com/deephdc/demo_app)
 """
 
 from pathlib import Path
@@ -655,7 +653,7 @@ schema = {
 #     """
 #     Return same inputs as provided. We also add additional fields
 #     to test the functionality of the Gradio-based UI [1].
-#        [1]: https://github.com/deephdc/deepaas_ui
+#        [1]: https://github.com/ai4os/deepaas_ui
 #     """
 #     # Dict are fed as str so have to be converted back
 #     kwargs["demo-dict"] = json.loads(kwargs["demo-dict"])

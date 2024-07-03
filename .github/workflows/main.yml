@@ -4,7 +4,7 @@
 # [!] Note: Do not do a force push to not overwrite the .github/workflow/main.yml file.
 
 # We are not using a predefined action (eg. [1]) to not go through the hassle of having to
-# manage Github Personal Access Tokens for deephdc.
+# manage Github Personal Access Tokens for ai4os-hub.
 # [1]: https://github.com/repo-sync/github-sync
 
 

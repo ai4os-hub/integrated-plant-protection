@@ -3,14 +3,34 @@
 
 Integrated Plant Protection
 
+## Usage
+
 To launch it, first install the package then run [deepaas](https://github.com/ai4os/DEEPaaS):
 ```bash
-git clone https://github.com/ai4eosc-psnc/integrated_plant_protection
-cd integrated_plant_protection
+git clone https://github.com/ai4os-hub/integrated-plant-protection
+cd integrated-plant-protection
 pip install -e .
 deepaas-run --listen-ip 0.0.0.0
 ```
-The associated Docker container for this module can be found in https://github.com/ai4eosc-psnc/DEEP-OC-integrated_plant_protection.
+### Directly from Docker Hub
+
+To run the Docker container directly from Docker Hub and start using the API simply run the following command:
+
+```bash
+$ docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-protection
+```
+
+This command will pull the Docker container from the Docker Hub [ai4oshub](https://hub.docker.com/u/ai4oshub/) repository and start the default command (`deepaas-run --listen-ip=0.0.0.0`).
+
+### Building the container
+
+If you want to build the container directly in your machine (because you want to modify the `Dockerfile` for instance) follow the instructions below:
+```bash
+git clone https://github.com/ai4os-hub/integrated-plant-protection
+cd integrated-plant-protection
+docker build -t ai4oshub/integrated-plant-protection .
+docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-protection
+```
 
 ## Project structure
 ```
