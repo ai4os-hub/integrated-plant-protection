@@ -72,9 +72,9 @@ RUN git clone -b $branch --depth 1 https://github.com/ai4os-hub/integrated-plant
     cd  integrated-plant-protection && \
     pip3 install --no-cache-dir -e . && \
     cd ..
-    
-RUN cd integrated-plant-protection && \
-    curl -o tmp.zip https://share.services.ai4os.eu/index.php/s/9MN2Zekf3sgisWJ/download  && \
+
+RUN cd integrated_plant_protection && \
+    curl -o tmp.zip https://share.services.ai4os.eu/index.php/s/5a65sZ349QWg7ny/download  && \
     unzip tmp.zip && \
     cp -r public/* . && \
     rm tmp.zip public -r 
