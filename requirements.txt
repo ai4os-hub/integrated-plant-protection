@@ -9,6 +9,7 @@
 # flaat~=0.8.0
 
 confuse~=2.0.1
+aiohttp~=3.6.0
 deepaas~=2.2.0
 imbalanced-learn~=0.11.0
 imblearn~=0.0
