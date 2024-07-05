@@ -36,7 +36,7 @@ from random import random
 import time
 from webargs import fields, validate
 
-from aiohttp.web import HTTPBadRequest
+from aiohttp.web import HTTPException
 import builtins
 from collections import OrderedDict
 from datetime import datetime
@@ -44,6 +44,8 @@ from functools import wraps
 import os, sys
 import re
 import warnings
+
+import logging
 
 import numpy as np
 import requests
@@ -56,6 +58,8 @@ from integrated_plant_protection.models import SmallCNNModel, Unet
 from integrated_plant_protection import paths, config, test_utils
 from integrated_plant_protection.data_utils import mount_nextcloud
 from integrated_plant_protection.train_runfile import train_fn
+
+logger = logging.getLogger(__name__)
 
 class ConfigLoader:
     """Load and validate config file using confuse library.
@@ -121,44 +125,31 @@ config_template = {
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
-
 @_catch_error
 def get_metadata():
-    """
-    DO NOT REMOVE - All modules should have a get_metadata() function
-    with appropriate keys.
-    """
-    module = __name__.split('.', 1)
-    try:
-        pkg = pkg_resources.get_distribution(module[0])
-    except pkg_resources.RequirementParseError:
-        # if called from CLI, try to get pkg from the path
-        distros = list(pkg_resources.find_distributions(str(BASE_DIR), only=True))
-        if len(distros) == 1:
-            pkg = distros[0] # if several select first
-        else:
-            pkg = pkg_resources.find_distributions(str(BASE_DIR), only=True)
-    except Exception as e:
-        raise HTTPBadRequest(reason=e)
+    """Returns a dictionary containing metadata information about the module.
 
-    meta_fields = {
-        "name": None,
-        "version": None,
-        "summary": None,
-        "home-page": None,
-        "author": None,
-        "author-email": None,
-        "license": None,
-    }
-    meta = {}
-    for line in pkg.get_metadata_lines("PKG-INFO"):
-        line_low = line.lower()  # to avoid inconsistency due to letter cases
-        for k in meta_fields:
-            if line_low.startswith(k + ":"):
-                _, value = line.split(": ", 1)
-                meta[k] = value
+    Raises:
+        HTTPException: Unexpected errors aim to return 50X
 
-    return meta
+    Returns:
+        A dictionary containing metadata information required by DEEPaaS.
+    """
+    try:  # Call your AI model metadata() method
+        logger.info("Collecting metadata from: %s", config.API_NAME)
+        metadata = {
+            "author": config.API_METADATA.get("authors"),
+            "author-email": config.API_METADATA.get("author-emails"),
+            "description": config.API_METADATA.get("summary"),
+            "license": config.API_METADATA.get("license"),
+            "version": config.API_METADATA.get("version"),
+        }
+        logger.debug("Package model metadata: %s", metadata)
+        return metadata
+    except Exception as err:
+        logger.error("Error collecting metadata: %s", err, exc_info=True)
+        raise  # Reraise the exception after log
+
 
 #Mount NextCloud folders (if NextCloud is available)
 try:

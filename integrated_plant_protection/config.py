@@ -19,22 +19,22 @@ import builtins
 
 import yaml
 
-# from importlib import metadata
+from importlib import metadata
 
-# # Get AI model metadata
-# API_NAME = "{{ cookiecutter.__app_name }}"
-# API_METADATA = metadata.metadata(API_NAME)  # .json
+# Get AI model metadata
+API_NAME = "integrated_plant_protection"
+API_METADATA = metadata.metadata(API_NAME)  # .json
 
-# # Fix metadata for emails from pyproject parsing
-# _EMAILS = API_METADATA["Author-email"].split(", ")
-# _EMAILS = map(lambda s: s[:-1].split(" <"), _EMAILS)
-# API_METADATA["Author-emails"] = dict(_EMAILS)
+# Fix metadata for emails from pyproject parsing
+_EMAILS = API_METADATA["Author-email"].split(", ")
+_EMAILS = map(lambda s: s[:-1].split(" <"), _EMAILS)
+API_METADATA["Author-emails"] = dict(_EMAILS)
 
-# # Fix metadata for authors from pyproject parsing
-# _AUTHORS = API_METADATA.get("Author", "").split(", ")
-# _AUTHORS = [] if _AUTHORS == [""] else _AUTHORS
-# _AUTHORS += API_METADATA["Author-emails"].keys()
-# API_METADATA["Authors"] = sorted(_AUTHORS)
+# Fix metadata for authors from pyproject parsing
+_AUTHORS = API_METADATA.get("Author", "").split(", ")
+_AUTHORS = [] if _AUTHORS == [""] else _AUTHORS
+_AUTHORS += API_METADATA["Author-emails"].keys()
+API_METADATA["Authors"] = sorted(_AUTHORS)
 
 homedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 conf_path = os.path.join(homedir, 'etc', 'config.yaml')

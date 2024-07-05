@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "integrated_plant_protection"
+authors = [{ name = "PSNC WODR", email = "support@kiwi.psnc.pl" }]
+description = "Integrated Plant Protection"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT License" }
+classifiers = [
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT",
+]
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+"Homepage" = "https://github.com/ai4os-hub/integrated-plant-protection"
+"Bug Tracker" = "https://github.com/ai4os-hub/integrated-plant-protection/issues"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+env = [
+    "INTEGRATED_PLANT_PROTECTION_DATA_PATH=data",
+    "INTEGRATED_PLANT_PROTECTION_MODELS_PATH=models",
+]
+# Allow test files to share names
+# https://docs.pytest.org/en/7.1.x/explanation/goodpractices.html
+addopts = "--import-mode=importlib"
+
+[tool.setuptools]
+packages = ["integrated_plant_protection"]
+
+[tool.setuptools.package-dir]
+"integrated_plant_protection" = "integrated_plant_protection"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+version = { file = "VERSION" }
+
+[project.entry-points."deepaas.v2.model"]
+integrated_plant_protection = "integrated_plant_protection.api"
