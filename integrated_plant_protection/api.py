@@ -36,6 +36,7 @@ from random import random
 import time
 from webargs import fields, validate
 
+from aiohttp.web import HTTPBadRequest
 import builtins
 from collections import OrderedDict
 from datetime import datetime
@@ -127,10 +128,18 @@ def get_metadata():
     DO NOT REMOVE - All modules should have a get_metadata() function
     with appropriate keys.
     """
-    distros = list(pkg_resources.find_distributions(str(BASE_DIR), only=True))
-    if len(distros) == 0:
-        raise Exception("No package found.")
-    pkg = distros[0]  # if several select first
+    module = __name__.split('.', 1)
+    try:
+        pkg = pkg_resources.get_distribution(module[0])
+    except pkg_resources.RequirementParseError:
+        # if called from CLI, try to get pkg from the path
+        distros = list(pkg_resources.find_distributions(str(BASE_DIR), only=True))
+        if len(distros) == 1:
+            pkg = distros[0] # if several select first
+        else:
+            pkg = pkg_resources.find_distributions(str(BASE_DIR), only=True)
+    except Exception as e:
+        raise HTTPBadRequest(reason=e)
 
     meta_fields = {
         "name": None,
