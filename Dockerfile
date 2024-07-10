@@ -74,8 +74,8 @@ RUN git clone -b $branch --depth 1 https://github.com/ai4os-hub/integrated-plant
     cd ..
 
 RUN cd integrated-plant-protection && \
-    curl -o tmp.zip https://share.services.ai4os.eu/index.php/s/5a65sZ349QWg7ny/download  && \
-    unzip tmp.zip && \
+    curl https://beta.ibis.apps.psnc.pl/ai4eosc/models/fb8c695c-4b34-4a5c-bef3-1f0fdae6c65f/integrated_plant_protection/models/public.zip  && \
+    unzip public.zip && \
     cp -r public/* . && \
     rm tmp.zip public -r 
 
