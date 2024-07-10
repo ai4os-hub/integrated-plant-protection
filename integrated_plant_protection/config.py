@@ -3,9 +3,8 @@ Date: September 2018
 Author: Ignacio Heredia
 Email: iheredia@ifca.unican.es
 Github: ignacioheredia
-"""
 
-"""
+Modification:
 Date: December 2023
 Modifier: Jędrzej Smok
 Email: jsmok@man.poznan.pl
@@ -13,12 +12,11 @@ Github: ai4eosc-psnc
 """
 
 import os
-import textwrap
 import builtins
-
+import textwrap
 import yaml
-
 from importlib import metadata
+
 
 # Get AI model metadata
 API_NAME = "integrated_plant_protection"
@@ -55,20 +53,33 @@ def check_conf(conf=CONF):
             if "type" in gg_keys:
                 var_type = getattr(builtins, g_val["type"])
                 if type(g_val["value"]) is not var_type:
-                    raise TypeError("The selected value for {} must be a {}.".format(g_key, g_val["type"]))
-
-            if ("choices" in gg_keys) and (g_val["value"] not in g_val["choices"]):
-                raise ValueError("The selected value for {} is not an available choice.".format(g_key))
-
-            if "range" in gg_keys:
-                if (g_val["range"][0] is not None) and (g_val["range"][0] > g_val["value"]):
-                    raise ValueError(
-                        "The selected value for {} is lower than the minimal possible value.".format(g_key)
+                    raise TypeError(
+                        "The selected value for {} must be a {}.".format(
+                            g_key, g_val["type"]
+                        )
                     )
 
-                if (g_val["range"][1] != "None") and (g_val["range"][1] < g_val["value"]):
+            if ("choices" in gg_keys) and (
+                    g_val["value"] not in g_val["choices"]):
+                raise ValueError(
+                    "The selected value for {g_key}" +
+                    " is not an available choice.")
+
+            if "range" in gg_keys:
+                if (g_val["range"][0] is not None) and (
+                    g_val["range"][0] > g_val["value"]
+                ):
                     raise ValueError(
-                        "The selected value for {} is higher than the maximal possible value.".format(g_key)
+                        f"The selected value for {g_key}"
+                        + " is lower than the minimal possible value."
+                    )
+
+                if (g_val["range"][1] != "None") and (
+                    g_val["range"][1] < g_val["value"]
+                ):
+                    raise ValueError(
+                        f"The selected value for {g_key}"
+                        + " is higher than the maximal possible value."
                     )
 
 

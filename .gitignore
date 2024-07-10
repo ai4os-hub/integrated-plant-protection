@@ -143,3 +143,5 @@ GTAGS
 ###################################
 venv*
 yarl*
+.flake8
+precommit.sh

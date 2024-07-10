@@ -27,7 +27,9 @@ class TestModelMethods(unittest.TestCase):
         image_path = os.path.join(data_path, "sick_105.jpg")
         tmp_path = os.path.join(data_path, "tmp_file.jpg")
         shutil.copyfile(image_path, tmp_path)
-        self.test_image_data = UploadedFile(name="data", filename=tmp_path, content_type="image/jpg")
+        self.test_image_data = UploadedFile(
+            name="data", filename=tmp_path, content_type="image/jpg"
+        )
 
     def test_model_metadata_type(self):
         """

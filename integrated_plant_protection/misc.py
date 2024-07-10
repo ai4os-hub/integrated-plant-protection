@@ -5,10 +5,10 @@ but users might want nevertheless to take advantage from them.
 
 """
 
-from functools import wraps
-from multiprocessing import Process
 import subprocess
 import warnings
+from functools import wraps
+from multiprocessing import Process
 
 from aiohttp.web import HTTPBadRequest
 
@@ -65,7 +65,9 @@ def mount_nextcloud(frompath, topath):
         Destination folder
     """
     command = ["rclone", "copy", f"{frompath}", f"{topath}"]
-    result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     output, error = result.communicate()
     if error:
         warnings.warn(f"Error while mounting NextCloud: {error}")
@@ -73,7 +75,17 @@ def mount_nextcloud(frompath, topath):
 
 
 def launch_cmd(logdir, port):
-    subprocess.call(["tensorboard", "--logdir", f"{logdir}", "--port", f"{port}", "--host", "0.0.0.0"])
+    subprocess.call(
+        [
+            "tensorboard",
+            "--logdir",
+            f"{logdir}",
+            "--port",
+            f"{port}",
+            "--host",
+            "0.0.0.0",
+        ]
+    )
 
 
 def launch_tensorboard(logdir, port=6006):
@@ -87,6 +99,8 @@ def launch_tensorboard(logdir, port=6006):
     * port: int
         Port to use for the monitoring webserver.
     """
-    subprocess.run(["fuser", "-k", f"{port}/tcp"])  # kill any previous process in that port
+    subprocess.run(
+        ["fuser", "-k", f"{port}/tcp"]
+    )  # kill any previous process in that port
     p = Process(target=launch_cmd, args=(logdir, port), daemon=True)
     p.start()

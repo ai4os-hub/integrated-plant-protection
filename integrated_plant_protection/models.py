@@ -1,16 +1,14 @@
 """
 Date: December 2023
-Author: Jędrzej Smok 
+Author: Jędrzej Smok
 Email: jsmok@man.poznan.pl
 Github: ai4eosc-psnc
 """
 
-from typing import List, Callable, Union, Any, TypeVar, Tuple
 from abc import abstractmethod
-
+from typing import Any, List
 import torch
-from torch import nn
-from torch import Tensor
+from torch import Tensor, nn
 from torch.nn import functional as F
 
 
@@ -48,14 +46,21 @@ class SmallCNNModel(BaseClassifier):
         super(SmallCNNModel, self).__init__()
         in_channels = channels[0]
         modules = []
-        modules.append(nn.Conv2d(3, channels[0], kernel_size=7, padding="same"))
+        modules.append(
+            nn.Conv2d(3, channels[0], kernel_size=7, padding="same")
+        )
         modules.append(nn.BatchNorm2d(channels[0]))
         modules.append(nn.ReLU())
         modules.append(nn.MaxPool2d(2))
         for channel in channels:
             modules.append(
                 nn.Sequential(
-                    nn.Conv2d(in_channels, channel, kernel_size=5, padding="same"),
+                    nn.Conv2d(
+                        in_channels,
+                        channel,
+                        kernel_size=5,
+                        padding="same",
+                    ),
                     nn.BatchNorm2d(channel),
                     nn.ReLU(),
                     nn.Conv2d(channel, channel, kernel_size=5, padding="same"),
@@ -65,11 +70,25 @@ class SmallCNNModel(BaseClassifier):
                 )
             )
             in_channels = channel
-        modules.append(nn.Conv2d(channels[-1], channels[-1] * 2, kernel_size=3, padding="same"))
+        modules.append(
+            nn.Conv2d(
+                channels[-1],
+                channels[-1] * 2,
+                kernel_size=3,
+                padding="same",
+            )
+        )
         modules.append(nn.BatchNorm2d(channels[-1] * 2))
         modules.append(nn.ReLU())
         modules.append(nn.MaxPool2d(2))
-        modules.append(nn.Conv2d(channels[-1] * 2, channels[-1] * 2, kernel_size=3, padding="same"))
+        modules.append(
+            nn.Conv2d(
+                channels[-1] * 2,
+                channels[-1] * 2,
+                kernel_size=3,
+                padding="same",
+            )
+        )
         modules.append(nn.BatchNorm2d(channels[-1] * 2))
         modules.append(nn.ReLU())
         modules.append(nn.MaxPool2d(2))
@@ -128,7 +147,14 @@ class encoder_block(nn.Module):
 class decoder_block(nn.Module):
     def __init__(self, in_c, out_c):
         super().__init__()
-        self.up_conv = nn.ConvTranspose2d(in_c, out_c, kernel_size=2, stride=2, padding=0, output_padding=0)
+        self.up_conv = nn.ConvTranspose2d(
+            in_c,
+            out_c,
+            kernel_size=2,
+            stride=2,
+            padding=0,
+            output_padding=0,
+        )
         self.conv_block = conv_block(out_c + out_c, out_c)
 
     def forward(self, inputs, skip):
@@ -136,7 +162,18 @@ class decoder_block(nn.Module):
         d2 = skip.shape[2] - x.shape[2]
         d3 = skip.shape[3] - x.shape[3]
         # print(f"Decoder x shape:{x.shape}, skip shape: {skip.shape}")
-        x = torch.cat([x, skip[:, :, d2 // 2 : d2 // 2 + x.shape[2], d3 // 2 : d3 // 2 + x.shape[3]]], axis=1)
+        x = torch.cat(
+            [
+                x,
+                skip[
+                    :,
+                    :,
+                    d2 // 2: d2 // 2 + x.shape[2],
+                    d3 // 2: d3 // 2 + x.shape[3],
+                ],
+            ],
+            axis=1,
+        )
         x = self.conv_block(x)
         return x
 

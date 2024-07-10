@@ -3,19 +3,17 @@ Date: September 2018
 Author: Ignacio Heredia
 Email: iheredia@ifca.unican.es
 Github: ignacioheredia
-"""
 
-"""
+Modification:
 Date: December 2023
 Modifier: Jędrzej Smok
 Email: jsmok@man.poznan.pl
 Github: ai4eosc-psnc
 """
 
+from integrated_plant_protection import config
 import os.path
 from datetime import datetime
-
-from integrated_plant_protection import config
 
 
 homedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
