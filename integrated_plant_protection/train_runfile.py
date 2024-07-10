@@ -212,7 +212,7 @@ def train_fn(TIMESTAMP, CONF):
         port = os.getenv("monitorPORT", 6006)
         port = int(port) if len(str(port)) >= 4 else 6006
         fuser_path = shutil.which("fuser")
-        if fuser_path is None:
+        if fuser_path is not None:
             subprocess.run(
                 [fuser_path, "-k", "{}/tcp".format(port)]
             )  # kill any previous process in that port
