@@ -21,24 +21,24 @@ from integrated_plant_protection import config
 homedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 CONF = config.get_conf_dict()
-timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
+timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
 
 
 def get_base_dir():
-    base_dir = CONF['general']['base_directory']
+    base_dir = CONF["general"]["base_directory"]
     if os.path.isabs(base_dir):
         return base_dir
     else:
         return os.path.abspath(os.path.join(homedir, base_dir))
 
 
-
 def get_images_dir():
-    img_dir = CONF['constants']['images_directory']
+    img_dir = CONF["constants"]["images_directory"]
     if os.path.isabs(img_dir):
         return img_dir
     else:
         return os.path.abspath(os.path.join(homedir, img_dir))
+
 
 def get_splits_dir():
     return os.path.join(get_base_dir(), "data", "dataset_files")
@@ -46,6 +46,7 @@ def get_splits_dir():
 
 def get_models_dir():
     return os.path.join(get_base_dir(), "models")
+
 
 def get_preprocess_models_dir():
     return os.path.join(get_base_dir(), "preprocess_models")
@@ -61,8 +62,6 @@ def get_checkpoints_dir():
 
 def get_logs_dir():
     return os.path.join(get_timestamped_dir(), "tensorboard")
-
-
 
 
 def get_conf_dir():
@@ -82,24 +81,25 @@ def get_predictions_dir():
 
 
 def get_dirs():
-    return {'base dir': get_base_dir(),
-            'models_dir': get_models_dir(),
-            'preprocess_models_dir': get_preprocess_models_dir(),
-            'timestamped dir': get_timestamped_dir(),
-            'logs dir': get_logs_dir(),
-            'checkpoints dir': get_checkpoints_dir(),
-            'configuration dir': get_conf_dir(),
-            'statistics dir': get_stats_dir(),
-            'timestamped data splits dir': get_ts_splits_dir(),
-            'predictions dir': get_predictions_dir(),
-            }
+    return {
+        "base dir": get_base_dir(),
+        "models_dir": get_models_dir(),
+        "preprocess_models_dir": get_preprocess_models_dir(),
+        "timestamped dir": get_timestamped_dir(),
+        "logs dir": get_logs_dir(),
+        "checkpoints dir": get_checkpoints_dir(),
+        "configuration dir": get_conf_dir(),
+        "statistics dir": get_stats_dir(),
+        "timestamped data splits dir": get_ts_splits_dir(),
+        "predictions dir": get_predictions_dir(),
+    }
 
 
 def print_dirs():
     dirs = get_dirs()
     max_len = max([len(v) for v in dirs.keys()])
-    for k,v in dirs.items():
-        print('{k:{l:d}s} {v:3s}'.format(l=max_len + 5, v=v, k=k))
+    for k, v in dirs.items():
+        print("{k:{l:d}s} {v:3s}".format(l=max_len + 5, v=v, k=k))
 
 
 def main():

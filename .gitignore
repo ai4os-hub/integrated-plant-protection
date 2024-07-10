@@ -141,3 +141,5 @@ GTAGS
 
 # Things specific to this project #
 ###################################
+venv*
+yarl*

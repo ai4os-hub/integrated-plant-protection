@@ -20,6 +20,7 @@ import numpy as np
 
 from integrated_plant_protection import paths
 
+
 def create_dir_tree():
     """
     Create directory tree structure
@@ -27,7 +28,7 @@ def create_dir_tree():
     dirs = paths.get_dirs()
     for d in dirs.values():
         if not os.path.isdir(d):
-            print('creating {}'.format(d))
+            print("creating {}".format(d))
             os.makedirs(d)
 
 
@@ -51,16 +52,15 @@ def save_conf(conf):
     save_dir = paths.get_conf_dir()
 
     # Save dict as json file
-    with open(os.path.join(save_dir, 'conf.json'), 'w') as outfile:
+    with open(os.path.join(save_dir, "conf.json"), "w") as outfile:
         json.dump(conf, outfile, sort_keys=True, indent=4)
 
     # Save dict as txt file for easier redability
-    txt_file = open(os.path.join(save_dir, 'conf.txt'), 'w')
-    txt_file.write("{:<25}{:<30}{:<30} \n".format('group', 'key', 'value'))
-    txt_file.write('=' * 75 + '\n')
+    txt_file = open(os.path.join(save_dir, "conf.txt"), "w")
+    txt_file.write("{:<25}{:<30}{:<30} \n".format("group", "key", "value"))
+    txt_file.write("=" * 75 + "\n")
     for key, val in sorted(conf.items()):
         for g_key, g_val in sorted(val.items()):
             txt_file.write("{:<25}{:<30}{:<15} \n".format(key, g_key, str(g_val)))
-        txt_file.write('-' * 75 + '\n')
+        txt_file.write("-" * 75 + "\n")
     txt_file.close()
-
