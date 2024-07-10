@@ -106,10 +106,8 @@ def launch_tensorboard(logdir, port=6006):
     """
     fuser_path = shutil.which("fuser")
     if fuser_path is None:
-        raise FileNotFoundError("fuser executable not found in PATH")
-
-    subprocess.run(
-        [fuser_path, "-k", f"{port}/tcp"]
-    )  # kill any previous process in that port
+        subprocess.run(
+            [fuser_path, "-k", f"{port}/tcp"]
+        )  # kill any previous process in that port
     p = Process(target=launch_cmd, args=(logdir, port), daemon=True)
     p.start()

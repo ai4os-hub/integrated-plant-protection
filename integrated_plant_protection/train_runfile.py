@@ -213,11 +213,9 @@ def train_fn(TIMESTAMP, CONF):
         port = int(port) if len(str(port)) >= 4 else 6006
         fuser_path = shutil.which("fuser")
         if fuser_path is None:
-            raise FileNotFoundError("fuser executable not found.")
-
-        subprocess.run(
-            [fuser_path, "-k", "{}/tcp".format(port)]
-        )  # kill any previous process in that port
+            subprocess.run(
+                [fuser_path, "-k", "{}/tcp".format(port)]
+            )  # kill any previous process in that port
 
         p = Process(
             target=launch_tensorboard,

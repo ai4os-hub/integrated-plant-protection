@@ -3,20 +3,9 @@
 def projectConfig
 
 pipeline {
-    agent {
-        docker {
-            image 'ubuntu:latest'
-            args '-u root:root'
-        }
-    }
-
+    agent any
+    
     stages {
-        stage('Setup') {
-            steps {
-                sh 'apt-get update'
-                sh 'apt-get install -y psmisc'
-            }
-        }
         stage('Application testing') {
             steps {
                 script {
