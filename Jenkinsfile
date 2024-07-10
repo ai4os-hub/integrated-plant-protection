@@ -6,6 +6,12 @@ pipeline {
     agent any
 
     stages {
+        stage('Setup') {
+            steps {
+                sh 'sudo apt-get update'
+                sh 'sudo apt-get install -y psmisc'
+            }
+        }
         stage('Application testing') {
             steps {
                 script {
