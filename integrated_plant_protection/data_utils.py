@@ -11,7 +11,6 @@ import random
 import subprocess
 import warnings
 from typing import List, Tuple
-
 import cv2
 import numpy as np
 import requests
@@ -22,17 +21,17 @@ from torchvision import transforms
 
 
 def prepare_filenames(data_path: str):
-    file_paths = [os.path.join(data_path, img)
-                  for img in os.listdir(data_path)]
+    file_paths = [
+        os.path.join(data_path, img) for img in os.listdir(data_path)
+    ]
     return file_paths
 
 
 def _prepare_test_data(_paths, filemode="local", img_size=512):
     images = [
-        load_image(
-            path,
-            filemode=filemode,
-            img_size=img_size) for path in _paths]
+        load_image(path, filemode=filemode, img_size=img_size)
+        for path in _paths
+    ]
     images = np.asarray(images)
     return images
 
@@ -57,15 +56,12 @@ def _prepare_data(healthy_paths, sick_paths, as_dict=False, img_size=512):
         return healthy_paths_resampled, sick_paths_resampled
 
     def prepare_data_by_class(
-            paths: list,
-            labels_value,
-            img_size,
-            split_part=0.9):
+        paths: list, labels_value, img_size, split_part=0.9
+    ):
         images = [
-            load_image(
-                path,
-                filemode="local",
-                img_size=img_size) for path in paths]
+            load_image(path, filemode="local", img_size=img_size)
+            for path in paths
+        ]
         images = np.asarray(images)
         np.random.shuffle(images)
 
@@ -186,9 +182,8 @@ def prepare_preprocess_data(
     file_names: List[str], image_size=512, batch_size=16, num_workers=0
 ) -> Tuple[DataLoader, int]:
     images = _prepare_test_data(
-        file_names,
-        filemode="local",
-        img_size=image_size)
+        file_names, filemode="local", img_size=image_size
+    )
     test_transform = transforms.Compose(
         [
             transforms.ToPILImage(),
@@ -199,9 +194,8 @@ def prepare_preprocess_data(
 
     dataset = PreprocessImageDataset((images, file_names), test_transform)
     dataloader = DataLoader(
-        dataset,
-        batch_size=batch_size,
-        num_workers=num_workers)
+        dataset, batch_size=batch_size, num_workers=num_workers
+    )
 
     return dataloader, len(dataloader)
 
@@ -214,9 +208,8 @@ def prepare_test_data(
     num_workers=0,
 ) -> Tuple[DataLoader, int]:
     images = _prepare_test_data(
-        file_names,
-        filemode=filemode,
-        img_size=image_size)
+        file_names, filemode=filemode, img_size=image_size
+    )
     test_transform = transforms.Compose(
         [
             transforms.ToPILImage(),
@@ -229,9 +222,8 @@ def prepare_test_data(
 
     dataset = MyDataset(images, test_transform, mode="image")
     dataloader = DataLoader(
-        dataset,
-        batch_size=batch_size,
-        num_workers=num_workers)
+        dataset, batch_size=batch_size, num_workers=num_workers
+    )
 
     return dataloader, len(dataloader)
 
@@ -318,9 +310,8 @@ def mount_nextcloud(frompath, topath):
     """
     command = ["rclone", "copy", f"{frompath}", f"{topath}"]
     result = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     output, error = result.communicate()
     if error:
         warnings.warn(f"Error while mounting NextCloud: {error}")
@@ -357,7 +348,7 @@ def load_image(filename, filemode="local", img_size=512):
                 data = base64.b64decode(filename.split(";base64,")[1])
             else:  # normal url
 
-                data = requests.get(filename).content
+                data = requests.get(filename, timeout=10).content
             data = np.frombuffer(data, np.uint8)
             image = cv2.imdecode(data, cv2.IMREAD_COLOR)
             if image is None:

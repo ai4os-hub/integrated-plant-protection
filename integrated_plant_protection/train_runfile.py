@@ -153,16 +153,20 @@ def calculate_metrics(
         )
 
 
-def launch_tensorboard(port, logdir):
+def launch_tensorboard(port, logdir, host="127.0.0.1"):
+    tensorboard_path = shutil.which("tensorboard")
+    if tensorboard_path is None:
+        raise FileNotFoundError("TensorBoard executable not found.")
+    port = int(port) if len(str(port)) >= 4 else 6006
     subprocess.call(
         [
-            "tensorboard",
+            tensorboard_path,
             "--logdir",
             "{}".format(logdir),
             "--port",
             "{}".format(port),
             "--host",
-            "0.0.0.0",
+            "{}".format(host),
         ]
     )
 
@@ -207,9 +211,14 @@ def train_fn(TIMESTAMP, CONF):
     if CONF["base"]["is_tensorboard"]:
         port = os.getenv("monitorPORT", 6006)
         port = int(port) if len(str(port)) >= 4 else 6006
+        fuser_path = shutil.which("fuser")
+        if fuser_path is None:
+            raise FileNotFoundError("fuser executable not found.")
+
         subprocess.run(
-            ["fuser", "-k", "{}/tcp".format(port)]
+            [fuser_path, "-k", "{}/tcp".format(port)]
         )  # kill any previous process in that port
+
         p = Process(
             target=launch_tensorboard,
             args=(port, paths.get_logs_dir()),

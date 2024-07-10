@@ -60,10 +60,12 @@ def check_conf(conf=CONF):
                     )
 
             if ("choices" in gg_keys) and (
-                    g_val["value"] not in g_val["choices"]):
+                g_val["value"] not in g_val["choices"]
+            ):
                 raise ValueError(
-                    "The selected value for {g_key}" +
-                    " is not an available choice.")
+                    "The selected value for {g_key}"
+                    + " is not an available choice."
+                )
 
             if "range" in gg_keys:
                 if (g_val["range"][0] is not None) and (

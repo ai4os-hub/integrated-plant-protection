@@ -58,10 +58,8 @@ class ConfigLoader:
     """Load and validate config file using confuse library."""
 
     def __init__(
-            self,
-            config_path: str,
-            template: dict,
-            appname: str = "config"):
+        self, config_path: str, template: dict, appname: str = "config"
+    ):
         """Object creator.
 
         Parameters
@@ -181,9 +179,8 @@ def load_model(path: str, device, Model_Class=Unet, *args):
         model.load_state_dict(torch.load(path, map_location=device))
     elif issubclass(Model_Class, SmallCNNModel):
         model.load_state_dict(
-            torch.load(
-                path,
-                map_location=device)["model_state_dict"])
+            torch.load(path, map_location=device)["model_state_dict"]
+        )
     else:
         raise ValueError("Invalid model")
     model.eval()
@@ -323,7 +320,11 @@ def catch_url_error(url_list):
 
             # Error catch: Inexistent url
             try:
-                url_type = requests.head(i).headers.get("content-type")
+                url_type = requests.head(i, timeout=10).headers.get(
+                    "content-type"
+                )
+            except requests.exceptions.Timeout:
+                raise ValueError(f"Request to {i} timed out.")
             except Exception:
                 raise ValueError(
                     "Failed url connection: "
@@ -373,9 +374,11 @@ def predict(**args):
         return predict_url(args)
 
     if not any([args["urls"], args["files"]]) or all(
-            [args["urls"], args["files"]]):
+        [args["urls"], args["files"]]
+    ):
         raise Exception(
-            "You must provide either 'url' or 'data' in the payload")
+            "You must provide either 'url' or 'data' in the payload"
+        )
 
     if args["files"]:
         args["files"] = [args["files"]]  # patch until list is available
@@ -487,9 +490,11 @@ def populate_parser(parser, default_conf):
 
             # Load optional keys
             help = g_val["help"] if ("help" in gg_keys) else ""
-            type = getattr(
-                builtins, g_val["type"]) if (
-                "type" in gg_keys) else None
+            type = (
+                getattr(builtins, g_val["type"])
+                if ("type" in gg_keys)
+                else None
+            )
             choices = g_val["choices"] if ("choices" in gg_keys) else None
 
             # Additional info in help string

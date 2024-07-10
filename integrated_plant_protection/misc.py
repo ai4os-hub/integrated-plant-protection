@@ -7,6 +7,7 @@ but users might want nevertheless to take advantage from them.
 
 import subprocess
 import warnings
+import shutil
 from functools import wraps
 from multiprocessing import Process
 
@@ -74,16 +75,20 @@ def mount_nextcloud(frompath, topath):
     return output, error
 
 
-def launch_cmd(logdir, port):
+def launch_cmd(logdir, port, host="127.0.0.1"):
+    tensorboard_path = shutil.which("tensorboard")
+    if tensorboard_path is None:
+        raise FileNotFoundError("tensorboard executable not found in PATH")
+
     subprocess.call(
         [
-            "tensorboard",
+            tensorboard_path,
             "--logdir",
             f"{logdir}",
             "--port",
             f"{port}",
             "--host",
-            "0.0.0.0",
+            f"{host}",
         ]
     )
 
@@ -99,8 +104,12 @@ def launch_tensorboard(logdir, port=6006):
     * port: int
         Port to use for the monitoring webserver.
     """
+    fuser_path = shutil.which("fuser")
+    if fuser_path is None:
+        raise FileNotFoundError("fuser executable not found in PATH")
+
     subprocess.run(
-        ["fuser", "-k", f"{port}/tcp"]
+        [fuser_path, "-k", f"{port}/tcp"]
     )  # kill any previous process in that port
     p = Process(target=launch_cmd, args=(logdir, port), daemon=True)
     p.start()
