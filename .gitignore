@@ -141,3 +141,8 @@ GTAGS
 
 # Things specific to this project #
 ###################################
+venv*
+yarl*
+.flake8
+precommit.sh
+tmp

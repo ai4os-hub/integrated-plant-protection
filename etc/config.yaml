@@ -75,11 +75,11 @@ base:
     type: "str"
     help: ""
   healthy_data_path: 
-    value: "/home/integrated_plant_protection/data/images/dataset1/healthy/images"
+    value: "./data/images/healthy"
     type: "str"
     help: ""
   sick_data_path: 
-    value: "/home/integrated_plant_protection/data/images/dataset1/sick/images"
+    value: "./data/images/sick"
     type: "str"
     help: ""
 
@@ -139,7 +139,7 @@ testing:
       Model timestamp to use for prediction.
 
   ckpt_name:
-    value: "model_0013.pt"
+    value: "rye-7.pt"
     type: "str"
     help: >
       Checkpoint inside the timestamp to use for prediction.

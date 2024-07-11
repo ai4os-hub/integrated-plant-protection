@@ -4,7 +4,7 @@ def projectConfig
 
 pipeline {
     agent any
-
+    
     stages {
         stage('Application testing') {
             steps {
