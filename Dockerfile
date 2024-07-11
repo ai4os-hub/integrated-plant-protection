@@ -41,7 +41,7 @@ RUN python3 --version && \
 # [1]: https://github.com/pypa/setuptools/issues/3301
 
 # Set LANG environment
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 # Set the working directory
 WORKDIR /srv
@@ -63,7 +63,7 @@ RUN git clone https://github.com/ai4os/deep-start /srv/.deep-start && \
     ln -s /srv/.deep-start/deep-start.sh /usr/local/bin/deep-start
 
 # Necessary for the Jupyter Lab terminal
-ENV SHELL /bin/bash
+ENV SHELL=/bin/bash
 
 # Install user app
 RUN apt-get update && apt-get  -y --no-install-recommends install libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 unzip psmisc
@@ -77,7 +77,7 @@ RUN cd integrated-plant-protection && \
     curl -o public.zip https://beta.ibis.apps.psnc.pl/ai4eosc/models/fb8c695c-4b34-4a5c-bef3-1f0fdae6c65f/integrated_plant_protection/models/public.zip  && \
     unzip public.zip && \
     cp -r public/* . && \
-    rm tmp.zip public -r 
+    rm -rf public.zip public
 
 # Open ports (deepaas, monitoring, ide)
 EXPOSE 5000 6006 8888
