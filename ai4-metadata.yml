@@ -26,6 +26,6 @@ categories:
   - AI4 pre trained
   - AI4 inference
 libraries:
-  - Pytorch
+  - PyTorch
 data-type:
   - Image
