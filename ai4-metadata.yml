@@ -1,0 +1,31 @@
+metadata_version: 2.0.0
+title: Integrated Plant Protection
+summary: A Torch model to classify plants.
+description: |-
+  Integrated Plant Protection is an application using the DEEPaaS API. The module contains 4 trained models based on CNN architecture with reduced network capacity due to the size of datasets. The pipeline is implemented in [PyTorch](https://pytorch.org/).
+  For rye, the first classifier in the normal approach is `rye-3` and for beets it is `beet-52`.
+  In the second approach, the impact of using preprocessing before the classifier was checked.
+  For this purpose, masks were collected and models were trained with U-Net architecture for segmentation. `rye-1` for rye and `beet-1` for beet.
+  Two more classifiers, namely `rye-7` and `beet-54`, were used to preprocess the corresponding models.
+  It was possible to train new models without and with preprocessing.
+  The same scheme is then used for prediction, with the difference that preprocessing is done immediately before GPU inference.
+dates:
+  created: '2023-12-20'
+  updated: '2024-08-12'
+links:
+  source_code: https://github.com/ai4os-hub/integrated-plant-protection
+  docker_image: ai4oshub/integrated-plant-protection
+  ai4_template: ai4-template/1.9.9
+tags:
+  - deep learning
+  - image classification
+tasks:
+  - Computer Vision
+  - Classification
+categories:
+  - AI4 pre trained
+  - AI4 inference
+libraries:
+  - PyTorch
+data-type:
+  - Image
