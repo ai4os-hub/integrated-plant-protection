@@ -10,7 +10,7 @@
 
 confuse~=2.0.1
 aiohttp~=3.6.0
-deepaas~=2.2.0
+deepaas>=2.2.0, <3.0
 imbalanced-learn~=0.11.0
 imblearn~=0.0
 lightning-utilities~=0.10.0
