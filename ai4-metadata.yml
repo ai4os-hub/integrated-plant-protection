@@ -20,6 +20,7 @@ links:
   docker_image: ai4oshub/integrated-plant-protection
   ai4_template: ai4-template/1.9.9
   dataset: https://zenodo.org/records/14707857
+  dataset: https://zenodo.org/records/15873360
 tags:
   - deep learning
   - image classification
