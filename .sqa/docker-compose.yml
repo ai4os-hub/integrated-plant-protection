@@ -7,7 +7,9 @@ services:
     hostname: "${BUILD_TAG}"
     working_dir: /srv
     command: >
-      sh -c "git config --global --add safe.directory /srv &&
+      sh -c "apt-get update &&
+             apt-get -y --no-install-recommends install libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 unzip psmisc &&
+             git config --global --add safe.directory /srv &&
              tail -f /dev/null"
     volumes:
       - type: bind
