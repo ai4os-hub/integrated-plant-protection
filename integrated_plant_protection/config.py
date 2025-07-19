@@ -1,56 +1,147 @@
-"""Module to define CONSTANTS used across the DEEPaaS Interface.
+"""
+Date: September 2018
+Author: Ignacio Heredia
+Email: iheredia@ifca.unican.es
+Github: ignacioheredia
 
-This module is used to define CONSTANTS used across the API interface.
-Do not misuse this module to define variables that are not CONSTANTS.
-
-By convention, the CONSTANTS defined in this module are in UPPER_CASE.
+Modification:
+Date: December 2023
+Modifier: Jędrzej Smok
+Email: jsmok@man.poznan.pl
+Github: ai4eosc-psnc
 """
 
-import logging
 import os
-from pathlib import Path
+import builtins
+import textwrap
+import yaml
 from importlib import metadata
 
-import yaml
 
-
-# Get AI model metadata from pyproject.toml
+# Get AI model metadata
 API_NAME = "integrated_plant_protection"
-PACKAGE_METADATA = metadata.metadata(API_NAME)  # .json
+API_METADATA = metadata.metadata(API_NAME)  # .json
 
-# Get ai4-metadata.yaml metadata
-CWD = Path.cwd()
-AI4_METADATA_DIR = os.getenv(f"{API_NAME.capitalize()}_AI4_METADATA_DIR")
-if AI4_METADATA_DIR is None:
-    if (CWD / API_NAME / "ai4-metadata.yml").exists():
-        AI4_METADATA_DIR = CWD / API_NAME
-    elif (CWD / ".." / API_NAME / "ai4-metadata.yml").exists():
-        AI4_METADATA_DIR = CWD / ".." / API_NAME
-    else:
-        AI4_METADATA_DIR = Path(__file__).resolve().parents[1]
+# Fix metadata for emails from pyproject parsing
+_EMAILS = API_METADATA["Author-email"].split(", ")
+_EMAILS = map(lambda s: s[:-1].split(" <"), _EMAILS)
+API_METADATA["Author-emails"] = dict(_EMAILS)
 
-# Open ai4-metadata.yml
-_file = f"{AI4_METADATA_DIR}/ai4-metadata.yml"
-with open(_file, "r", encoding="utf-8") as stream:
-    AI4_METADATA = yaml.safe_load(stream)
+# Fix metadata for authors from pyproject parsing
+_AUTHORS = API_METADATA.get("Author", "").split(", ")
+_AUTHORS = [] if _AUTHORS == [""] else _AUTHORS
+_AUTHORS += API_METADATA["Author-emails"].keys()
+API_METADATA["Authors"] = sorted(_AUTHORS)
 
-# Project metadata
-PROJECT_METADATA = {
-    "name": PACKAGE_METADATA["Name"],
-    "description": AI4_METADATA["description"],
-    "license": PACKAGE_METADATA["License"],
-    "version": PACKAGE_METADATA["Version"],
-    "url": PACKAGE_METADATA["Project-URL"],
-}
+homedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+conf_path = os.path.join(homedir, "etc", "config.yaml")
+with open(conf_path, "r") as f:
+    CONF = yaml.safe_load(f)
 
-# Fix metadata for authors and emails from pyproject parsing
-_EMAILS_LIST = PACKAGE_METADATA["Author-email"].split(", ")
-_EMAILS = dict(map(lambda s: s[:-1].split(" <"), _EMAILS_LIST))
-PROJECT_METADATA["author-email"] = _EMAILS
-_AUTHOR = ", ".join(PROJECT_METADATA["author-email"].keys())
-PROJECT_METADATA["author"] = _AUTHOR
 
-# logging level across API modules can be setup via API_LOG_LEVEL,
-# options: DEBUG, INFO(default), WARNING, ERROR, CRITICAL
-ENV_LOG_LEVEL = os.getenv("API_LOG_LEVEL", default="INFO")
-LOG_LEVEL = getattr(logging, ENV_LOG_LEVEL.upper())
+def check_conf(conf=CONF):
+    """
+    Checks for configuration parameters
+    """
+    for group, val in sorted(conf.items()):
+        for g_key, g_val in sorted(val.items()):
+            gg_keys = g_val.keys()
+
+            if g_val["value"] is None:
+                continue
+
+            if "type" in gg_keys:
+                var_type = getattr(builtins, g_val["type"])
+                if type(g_val["value"]) is not var_type:
+                    raise TypeError(
+                        "The selected value for {} must be a {}.".format(
+                            g_key, g_val["type"]
+                        )
+                    )
+
+            if ("choices" in gg_keys) and (
+                g_val["value"] not in g_val["choices"]
+            ):
+                raise ValueError(
+                    "The selected value for {g_key}"
+                    + " is not an available choice."
+                )
+
+            if "range" in gg_keys:
+                if (g_val["range"][0] is not None) and (
+                    g_val["range"][0] > g_val["value"]
+                ):
+                    raise ValueError(
+                        f"The selected value for {g_key}"
+                        + " is lower than the minimal possible value."
+                    )
+
+                if (g_val["range"][1] != "None") and (
+                    g_val["range"][1] < g_val["value"]
+                ):
+                    raise ValueError(
+                        f"The selected value for {g_key}"
+                        + " is higher than the maximal possible value."
+                    )
+
+
+check_conf()
+
+
+def get_conf_dict(conf=CONF):
+    """
+    Return configuration as dict
+    """
+    conf_d = {}
+    for group, val in conf.items():
+        conf_d[group] = {}
+        for g_key, g_val in val.items():
+            conf_d[group][g_key] = g_val["value"]
+    return conf_d
+
+
+conf_dict = get_conf_dict()
+
+
+def print_full_conf(conf=CONF):
+    """
+    Print all configuration parameters (including help, range, choices, ...)
+    """
+    for group, val in sorted(conf.items()):
+        print("=" * 75)
+        print("{}".format(group))
+        print("=" * 75)
+        for g_key, g_val in sorted(val.items()):
+            print("{}".format(g_key))
+            for gg_key, gg_val in g_val.items():
+                print("{}{}".format(" " * 4, gg_key))
+                body = "\n".join(
+                    [
+                        "\n".join(
+                            textwrap.wrap(
+                                line,
+                                width=110,
+                                break_long_words=False,
+                                replace_whitespace=False,
+                                initial_indent=" " * 8,
+                                subsequent_indent=" " * 8,
+                            )
+                        )
+                        for line in str(gg_val).splitlines()
+                        if line.strip() != ""
+                    ]
+                )
+                print(body)
+            print("\n")
+
+
+def print_conf_table(conf=conf_dict):
+    """
+    Print configuration parameters in a table
+    """
+    print("{:<25}{:<30}{:<30}".format("group", "key", "value"))
+    print("=" * 75)
+    for group, val in sorted(conf.items()):
+        for g_key, g_val in sorted(val.items()):
+            print("{:<25}{:<30}{:<15} \n".format(group, g_key, str(g_val)))
+        print("-" * 75 + "\n")

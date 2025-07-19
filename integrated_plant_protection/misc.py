@@ -2,12 +2,14 @@
 This file gathers some functions that have proven to be useful
 across projects. They are not strictly need for integration
 but users might want nevertheless to take advantage from them.
+
 """
 
+import subprocess
+import warnings
+import shutil
 from functools import wraps
 from multiprocessing import Process
-import subprocess  # nosec
-import warnings
 
 from aiohttp.web import HTTPBadRequest
 
@@ -64,25 +66,29 @@ def mount_nextcloud(frompath, topath):
         Destination folder
     """
     command = ["rclone", "copy", f"{frompath}", f"{topath}"]
-    result = subprocess.Popen(
-        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE  # nosec
-    )
+    result = subprocess.Popen(command,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE)
     output, error = result.communicate()
     if error:
         warnings.warn(f"Error while mounting NextCloud: {error}")
     return output, error
 
 
-def launch_cmd(logdir, port):
+def launch_cmd(logdir, port, host="127.0.0.1"):
+    tensorboard_path = shutil.which("tensorboard")
+    if tensorboard_path is None:
+        raise FileNotFoundError("tensorboard executable not found in PATH")
+
     subprocess.call(
         [
-            "tensorboard",  # nosec
+            tensorboard_path,
             "--logdir",
             f"{logdir}",
             "--port",
             f"{port}",
             "--host",
-            "0.0.0.0",
+            f"{host}",
         ]
     )
 
@@ -98,9 +104,10 @@ def launch_tensorboard(logdir, port=6006):
     * port: int
         Port to use for the monitoring webserver.
     """
-    subprocess.run(  # nosec
-        # kill any other process in that port
-        ["fuser", "-k", f"{port}/tcp"]  # nosec
-    )
+    fuser_path = shutil.which("fuser")
+    if fuser_path is not None:
+        subprocess.run(
+            [fuser_path, "-k", f"{port}/tcp"]
+        )  # kill any previous process in that port
     p = Process(target=launch_cmd, args=(logdir, port), daemon=True)
     p.start()
