@@ -52,7 +52,7 @@ class TestModelMethods(unittest.TestCase):
         self.test_timestamp = '"rye-7"'
         self.test_ckpt = '"rye-7.pt"'
         data_path = os.path.join(get_base_dir(), "data")
-        image_path = os.path.join(data_path, "sick_105.jpg")
+        image_path = os.path.join(data_path, "sick_105.JPG")
         tmp_path = os.path.join(data_path, "tmp_file.jpg")
         shutil.copyfile(image_path, tmp_path)
         self.test_image_data = UploadedFile(
