@@ -4,7 +4,7 @@ def projectConfig
 
 pipeline {
     agent any
-
+    
     stages {
         stage('Application testing') {
             steps {
@@ -20,24 +20,25 @@ pipeline {
         always {
             // file locations are defined in tox.ini
             // publish results of the style analysis
-            recordIssues(tools: [flake8(pattern: 'flake8.log',
+            recordIssues(enabledForFailure: true,
+                         tools: [flake8(pattern: 'flake8.log',
                                  name: 'PEP8 report',
                                  id: "flake8_pylint")])
             // publish results of the coverage test
             publishHTML([allowMissing: false, 
-                         alwaysLinkToLastBuild: false,
-                         keepAll: true,
-                         reportDir: "htmlcov",
-                         reportFiles: 'index.html',
-                         reportName: 'Coverage report',
-                         reportTitles: ''])
+                                 alwaysLinkToLastBuild: false, 
+                                 keepAll: true, 
+                                 reportDir: "htmlcov", 
+                                 reportFiles: 'index.html', 
+                                 reportName: 'Coverage report', 
+                                 reportTitles: ''])
             // publish results of the security check
             publishHTML([allowMissing: false, 
-                         alwaysLinkToLastBuild: false,
-                         keepAll: true,
-                         reportDir: "bandit",
-                         reportFiles: 'index.html',
-                         reportName: 'Bandit report',
+                         alwaysLinkToLastBuild: false, 
+                         keepAll: true, 
+                         reportDir: "bandit", 
+                         reportFiles: 'index.html', 
+                         reportName: 'Bandit report', 
                          reportTitles: ''])
             // Clean after build
             cleanWs()
