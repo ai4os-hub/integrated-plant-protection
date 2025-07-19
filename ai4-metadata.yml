@@ -4,8 +4,8 @@ summary: A Torch model to classify plants.
 description: |-
   The module contains 4 trained models based on CNN architecture with reduced network capacity due to the size of datasets.
   The pipeline is implemented in [PyTorch](https://pytorch.org/).
-
-  For rye, the first classifier in the normal approach is `rye-3` and for beets it is `beet-52`.
+  
+  For rye, the first classifier with resnet architecture is `rye-34` and for beets it is `beet-101`.
   In the second approach, the impact of using preprocessing before the classifier was checked.
   For this purpose, masks were collected and models were trained with U-Net architecture for segmentation. `rye-1` for rye and `beet-1` for beet.
   Two more classifiers, namely `rye-7` and `beet-54`, were used to preprocess the corresponding models.
