@@ -7,7 +7,7 @@ name = "integrated_plant_protection"
 authors = [{ name = "PSNC WODR", email = "support@kiwi.psnc.pl" }]
 description = "Integrated Plant Protection"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 license = { text = "MIT License" }
 classifiers = [
     "Intended Audience :: Information Technology",
