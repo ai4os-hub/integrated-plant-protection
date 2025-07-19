@@ -43,6 +43,7 @@ from pathlib import Path
 import confuse
 import requests
 import torch
+from torchvision import models, transforms
 from webargs import fields
 
 from integrated_plant_protection import config, paths, test_utils
@@ -247,12 +248,24 @@ def load_inference_model(timestamp=None, ckpt_name=None):
         update_with_saved_conf(conf)
 
     # Load the model
-    model = load_model(
-        os.path.join(paths.get_checkpoints_dir(), ckpt_name),
-        device,
-        SmallCNNModel,
-        conf["constants"]["channels"],
-    )
+    if len(conf["constants"]["channels"]) == 1:
+        if int(conf["constants"]["channels"][0]) == 101:
+            model = models.resnet101()
+        elif int(conf["constants"]["channels"][0]) == 34:
+            model = models.resnet34()
+        else:
+            raise ValueError("Invalid number of channels in the model.")
+        model.fc = torch.nn.Linear(model.fc.in_features, 2)
+        model.load_state_dict(torch.load(os.path.join(paths.get_checkpoints_dir(), ckpt_name), weights_only=True, map_location=device))
+        model = model.to(device)
+        model.eval()
+    else: 
+        model = load_model(
+            os.path.join(paths.get_checkpoints_dir(), ckpt_name),
+            device,
+            SmallCNNModel,
+            conf["constants"]["channels"],
+        )
 
     # Set the model as loaded
     loaded_ts = timestamp
@@ -418,6 +431,7 @@ def predict_url(args):
             model_unet = load_model(model_path, device, Unet)
 
     # Make the predictions
+    resnet = int(conf["constants"]["channels"][0]) if len(conf["constants"]["channels"]) == 1 else 0
     result = test_utils.predict(
         model=model,
         model_unet=model_unet,
@@ -427,6 +441,7 @@ def predict_url(args):
         image_size=conf["base"]["image_size"],
         batch_size=conf["base"]["batch_size"],
         num_workers=conf["constants"]["num_workers"],
+        resnet=resnet,
     )
     return result
 
@@ -464,6 +479,8 @@ def predict_data(args):
             model_unet = load_model(model_path, device, Unet)
     # Make the predictions
     try:
+        resnet = int(conf["constants"]["channels"][0]) if len(conf["constants"]["channels"]) == 1 else 0
+        
         result = test_utils.predict(
             model=model,
             model_unet=model_unet,
@@ -473,6 +490,7 @@ def predict_data(args):
             image_size=conf["base"]["image_size"],
             batch_size=conf["base"]["batch_size"],
             num_workers=conf["constants"]["num_workers"],
+            resnet=resnet,
         )
     finally:
         for f in filenames:

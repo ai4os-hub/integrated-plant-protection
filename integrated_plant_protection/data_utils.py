@@ -206,19 +206,25 @@ def prepare_test_data(
     image_size=512,
     batch_size=16,
     num_workers=0,
+    resnet=0,
 ) -> Tuple[DataLoader, int]:
     images = _prepare_test_data(
         file_names, filemode=filemode, img_size=image_size
     )
-    test_transform = transforms.Compose(
-        [
+    if resnet != 0:
+        test_transform = transforms.Compose([
             transforms.ToPILImage(),
-            # transforms.RandomHorizontalFlip(),
-            # transforms.RandomVerticalFlip(),
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+    else:
+        test_transform = transforms.Compose([
+            transforms.ToPILImage(),
             transforms.Resize((image_size, image_size)),
             transforms.ToTensor(),
-        ]
-    )
+        ])
 
     dataset = MyDataset(images, test_transform, mode="image")
     dataloader = DataLoader(
