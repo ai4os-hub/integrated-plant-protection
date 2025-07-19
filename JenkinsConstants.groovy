@@ -9,12 +9,13 @@ import groovy.transform.Field
 def dockerfile = 'Dockerfile'
 
 
-@Field
-def base_cpu_tag = '2.7.1-cuda12.6-cudnn9-runtime'
-
-@Field
-def base_gpu_tag = '2.7.1-cuda'
-
+// If <docker_baseimage> has separate CPU and GPU versions
+// Uncomment following lines and define both values
+//@Field
+//def base_cpu_tag = '2.9.1'
+//
+//@Field
+//def base_gpu_tag = ''
 
 
 return this;

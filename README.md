@@ -1,7 +1,8 @@
-# Integrated Plant Protection
-[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/)
+# integrated_plant_protection
 
-A Torch model to classify plant.
+[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Usage
 
@@ -12,23 +13,25 @@ cd integrated-plant-protection
 pip install -e .
 deepaas-run --listen-ip 0.0.0.0
 ```
+### Directly from Docker Hub
 
-## Contributing
+To run the Docker container directly from Docker Hub and start using the API simply run the following command:
 
-This module tries to enforce best practices by using [Black](https://github.com/psf/black)
-to format the code.
+```bash
+$ docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-protection
+```
 
-For an optimal development experience, we recommend installing the VScode extensions
-[Black](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
-and [Format on Auto Save](https://marketplace.visualstudio.com/items?itemName=BdSoftware.format-on-auto-save).
-Their configurations are automatically included in the [`.vscode`](./.vscode) folder.
-This will format the code during the automatic saves, though you can force formatting with
-`CTRL + Shift + I` (or `CTRL + S` to save).
+This command will pull the Docker container from the Docker Hub [ai4oshub](https://hub.docker.com/u/ai4oshub/) repository and start the default command (`deepaas-run --listen-ip=0.0.0.0`).
 
-To enable them only for this repository: after installing, click `Disable`,
-then click `Enable (workspace)`.
+### Building the container
 
-In the Black _global_ settings, we also recommend setting `black-formatter.showNotification = off`.
+If you want to build the container directly in your machine (because you want to modify the `Dockerfile` for instance) follow the instructions below:
+```bash
+git clone https://github.com/ai4os-hub/integrated-plant-protection
+cd integrated-plant-protection
+docker build -t ai4oshub/integrated-plant-protection .
+docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-protection
+```
 
 ## Project structure
 ```
@@ -42,8 +45,6 @@ In the Black _global_ settings, we also recommend setting `black-formatter.showN
 │
 ├── README.md              <- The top-level README for developers using this project.
 │
-├── VERSION                <- integrated_plant_protection version file
-│
 ├── .sqa/                  <- CI/CD configuration files
 │
 ├── integrated_plant_protection    <- Source code for use in this project.
@@ -51,8 +52,6 @@ In the Black _global_ settings, we also recommend setting `black-formatter.showN
 │   ├── __init__.py        <- Makes integrated_plant_protection a Python module
 │   │
 │   ├── api.py             <- Main script for the integration with DEEPaaS API
-│   |
-│   ├── config.py          <- Configuration file to define Constants used across integrated_plant_protection
 │   │
 │   └── misc.py            <- Misc functions that were helpful accross projects
 │
@@ -62,15 +61,12 @@ In the Black _global_ settings, we also recommend setting `black-formatter.showN
 │
 ├── tests/                 <- Scripts to perfrom code testing
 |
-├── ai4-metadata.yml       <- Metadata information propagated to the AI4OS Hub
+├── metadata.json          <- Defines information propagated to the AI4OS Hub
 │
-├── pyproject.toml         <- a configuration file used by packaging tools, so integrated_plant_protection
-│                             can be imported or installed with  `pip install -e .`
-│
-├── requirements.txt       <- The requirements file for reproducing the analysis environment, i.e.
-│                             contains a list of packages needed to make integrated_plant_protection work
-│
+├── requirements.txt       <- The requirements file for reproducing the analysis environment, e.g.
+│                             generated with `pip freeze > requirements.txt`
 ├── requirements-test.txt  <- The requirements file for running code tests (see tests/ directory)
 │
-└── tox.ini                <- Configuration file for the tox tool used for testing (see .sqa/)
+└── setup.py, setup.cfg    <- makes project pip installable (pip install -e .) so
+                              integrated_plant_protection can be imported
 ```

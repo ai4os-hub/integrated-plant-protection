@@ -1,0 +1,51 @@
+{
+  "title": "Integrated Plant Protection",
+  "summary": "A Torch model to classify plant.",
+  "description": [
+    "Integrated Plant Protection is an application using the DEEPaaS API.\n",
+    "The module contains 4 trained models based on CNN architecture with reduced network capacity due to the size of datasets.",
+    "The pipeline is implemented in [PyTorch](https://pytorch.org/).\n",
+    "For rye, the first classifier in the normal approach is rye-3 and for beets it is beet-52.\n",
+    "In the second approach, the impact of using preprocessing before the classifier was checked.\n",
+    "For this purpose, masks were collected and models were trained with U-Net architecture for segmentation. rye-1 for rye and beet-1 for beet.\n",
+    "Two more classifiers, namely rye-7 and beet-54, were used to preprocess the corresponding models.\n",
+    "It was possible to train new models without and with preprocessing.\n",
+    "The same scheme is then used for prediction, with the difference that preprocessing is done immediately before GPU inference.\n"
+  ],
+  "keywords": [
+    "docker",
+    "api-v2",
+    "pytorch",
+    "deep learning",
+    "pre-trained",
+    "trainable",
+    "imagine classification",
+    "vo.ai4eosc.eu"
+  ],
+  "license": "MIT",
+  "date_creation": "2023-12-20",
+  "dataset_url": "https://zenodo.org/records/15873360",
+  "sources": {
+    "dockerfile_repo": "https://github.com/ai4os-hub/integrated-plant-protection",
+    "docker_registry_repo": "ai4oshub/integrated-plant-protection",
+    "code": "https://github.com/ai4os-hub/integrated-plant-protection",
+    "ai4_template": "ai4-template/2.0.0"
+  },
+  "continuous_integration": {
+    "build_status_badge": "https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main",
+    "build_status_url": "https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/"
+  },
+  "tosca": [
+    {
+      "title": "Mesos (CPU)",
+      "url": "https://raw.githubusercontent.com/indigo-dc/tosca-templates/master/deep-oc/deep-oc-marathon-webdav.yml",
+      "inputs": [
+        "rclone_conf",
+        "rclone_url",
+        "rclone_vendor",
+        "rclone_user",
+        "rclone_pass"
+      ]
+    }
+  ]
+}

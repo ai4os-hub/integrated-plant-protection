@@ -13,8 +13,9 @@ from importlib import metadata
 
 import yaml
 
+
 # Get AI model metadata from pyproject.toml
-API_NAME = "integrated_plant_protection"
+API_NAME = "ai4os_demo_app"
 PACKAGE_METADATA = metadata.metadata(API_NAME)  # .json
 
 # Get ai4-metadata.yaml metadata
@@ -35,11 +36,11 @@ with open(_file, "r", encoding="utf-8") as stream:
 
 # Project metadata
 PROJECT_METADATA = {
-  "name": PACKAGE_METADATA["Name"],
-  "description": AI4_METADATA["description"],
-  "license": PACKAGE_METADATA["License"],
-  "version":  PACKAGE_METADATA["Version"],
-  "url":  PACKAGE_METADATA["Project-URL"],
+    "name": PACKAGE_METADATA["Name"],
+    "description": AI4_METADATA["description"],
+    "license": PACKAGE_METADATA["License"],
+    "version": PACKAGE_METADATA["Version"],
+    "url": PACKAGE_METADATA["Project-URL"],
 }
 
 # Fix metadata for authors and emails from pyproject parsing

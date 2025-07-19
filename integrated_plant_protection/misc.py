@@ -64,9 +64,9 @@ def mount_nextcloud(frompath, topath):
         Destination folder
     """
     command = ["rclone", "copy", f"{frompath}", f"{topath}"]
-    result = subprocess.Popen(command,               # nosec
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE)
+    result = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE  # nosec
+    )
     output, error = result.communicate()
     if error:
         warnings.warn(f"Error while mounting NextCloud: {error}")
@@ -74,10 +74,17 @@ def mount_nextcloud(frompath, topath):
 
 
 def launch_cmd(logdir, port):
-    subprocess.call(["tensorboard",                  # nosec
-                     "--logdir", f"{logdir}",
-                     "--port", f"{port}",
-                     "--host", "0.0.0.0"])
+    subprocess.call(
+        [
+            "tensorboard",  # nosec
+            "--logdir",
+            f"{logdir}",
+            "--port",
+            f"{port}",
+            "--host",
+            "0.0.0.0",
+        ]
+    )
 
 
 def launch_tensorboard(logdir, port=6006):

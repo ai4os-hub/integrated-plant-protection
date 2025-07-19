@@ -1,2 +1,7 @@
 webargs~=5.5.3
 deepaas>=2.1.0
+
+# not mandatory but nice if you want to monitor training
+tensorboard>=2.8.0
+tensorboardX>=2.5.1
+mlflow-skinny>=2.17.2

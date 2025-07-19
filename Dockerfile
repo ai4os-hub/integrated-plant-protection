@@ -7,17 +7,17 @@
 # or using default args:
 # $ docker build -t <dockerhub_user>/<dockerhub_repo> .
 #
-# Be Aware! For the Jenkins CI/CD pipeline, 
+# Be Aware! For the Jenkins CI/CD pipeline,
 # input args are defined inside the JenkinsConstants.groovy, not here!
 
-ARG tag=2.7.1-cuda12.6-cudnn9-runtime
+ARG tag=2.16.1
 
 # Base image, e.g. tensorflow/tensorflow:2.9.1
-FROM pytorch/pytorch:${tag}
+FROM tensorflow/tensorflow:${tag}
 
-LABEL maintainer='Poznańskie Centrum Superkomputerowo-Sieciowe'
-LABEL version='0.2.0'
-# A Torch model to classify plant.
+LABEL maintainer='Ignacio Heredia'
+LABEL version='0.0.1'
+# A demo application to test (eg. DEEPaaS testing). Does not contain any AI code.
 
 # What user branch to clone [!]
 ARG branch=main
@@ -30,17 +30,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         git \
         curl \
         nano \
+        psmisc \
     && rm -rf /var/lib/apt/lists/*
 
-# Update python packages
-# [!] Remember: DEEP API V2 only works with python>=3.6
-RUN python3 --version && \
-    pip3 install --no-cache-dir --upgrade pip "setuptools<60.0.0" wheel
-
-# TODO: remove setuptools version requirement when [1] is fixed
-# [1]: https://github.com/pypa/setuptools/issues/3301
-
-# Set LANG environment
+    # Set LANG environment
 ENV LANG C.UTF-8
 
 # Set the working directory
@@ -68,9 +61,13 @@ RUN git clone https://github.com/ai4os/deep-start /srv/.deep-start && \
 # Necessary for the Jupyter Lab terminal
 ENV SHELL /bin/bash
 
+# # Test local installation
+# COPY . /srv/ai4os-demo-app
+# RUN pip3 install --no-cache-dir -e /srv/ai4os-demo-app
+
 # Install user app
-RUN git clone -b $branch https://github.com/ai4os-hub/integrated-plant-protection && \
-    cd  integrated-plant-protection && \
+RUN git clone -b $branch https://github.com/ai4os-hub/ai4os-demo-app && \
+    cd  ai4os-demo-app && \
     pip3 install --no-cache-dir -e . && \
     cd ..
 
@@ -78,4 +75,4 @@ RUN git clone -b $branch https://github.com/ai4os-hub/integrated-plant-protectio
 EXPOSE 5000 6006 8888
 
 # Launch deepaas
-CMD [ "deep-start", "--deepaas" ]
+CMD ["deepaas-run", "--listen-ip", "0.0.0.0", "--listen-port", "5000"]
