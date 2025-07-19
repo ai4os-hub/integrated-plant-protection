@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "integrated_plant_protection"
+version = "0.2.0"
 authors = [{ name = "PSNC WODR", email = "support@kiwi.psnc.pl" }]
 description = "Integrated Plant Protection"
 readme = "README.md"
