@@ -1,8 +1,4 @@
-# Ignore everything
+# Ignore everything in this directory
 *
-
-# Do not ignore .gitignore itself
+# Except this file
 !.gitignore
-
-# Do not ignore the sick_105.jpg file
-!sick_105.jpg

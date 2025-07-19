@@ -1,36 +1,70 @@
 metadata_version: 2.0.0
 title: Integrated Plant Protection
-summary: A Torch model to classify plants.
+summary: "A Torch model to classify plant."
 description: |-
-  The module contains 4 trained models based on CNN architecture with reduced network capacity due to the size of datasets.
-  The pipeline is implemented in [PyTorch](https://pytorch.org/).
-
-  For rye, the first classifier in the normal approach is `rye-3` and for beets it is `beet-52`.
-  In the second approach, the impact of using preprocessing before the classifier was checked.
-  For this purpose, masks were collected and models were trained with U-Net architecture for segmentation. `rye-1` for rye and `beet-1` for beet.
-  Two more classifiers, namely `rye-7` and `beet-54`, were used to preprocess the corresponding models.
-  It was possible to train new models without and with preprocessing.
-  
-  The same scheme is then used for prediction, with the difference that preprocessing is done immediately before GPU inference.
+  integrated_plant_protection is an application using the DEEPaaS API.
+  A Torch model to classify plant.
+# doi: http://add-some-DOI-url.com
 dates:
-  created: '2023-12-20'
-  updated: '2024-08-12'
+  created: "2025-07-19"
+  updated: "2025-07-19"
 links:
+  ai4_template: ai4-template/2.2.0
   source_code: https://github.com/ai4os-hub/integrated-plant-protection
   docker_image: ai4oshub/integrated-plant-protection
-  ai4_template: ai4-template/1.9.9
-  dataset: https://zenodo.org/records/14707857
-  dataset: https://zenodo.org/records/15873360
-tags:
-  - deep learning
-  - image classification
-tasks:
-  - Computer Vision
-  - Classification
-categories:
-  - AI4 pre trained
-  - AI4 inference
-libraries:
-  - PyTorch
-data-type:
-  - Image
+  # documentation: http://add-some-documentation.com
+  # dataset: http://add-some-url-pointing-to-your-dataset.com
+  # weights: http://add-some-weights-url.com
+  # citation: http://add-some-DOI-url.com
+  # base_model: http://add-some-link-to-another-model.com
+#tags:        # required property, add user-defined tags that you consider relevant
+  # - deep learning
+#tasks:       # required property, uncomment together with relevant items
+  # - Computer Vision
+  # - Natural Language Processing
+  # - Time Series
+  # - Recommender Systems
+  # - Anomaly Detection
+  # - Regression
+  # - Classification
+  # - Clustering
+  # - Dimensionality Reduction
+  # - Generative Models
+  # - Graph Neural Networks
+  # - Optimization
+  # - Reinforcement Learning
+  # - Transfer Learning
+  # - Uncertainty Estimation
+  # - Other
+#categories:  # required property, uncomment together with relevant items
+  # - AI4 trainable
+  # - AI4 pre trained
+  # - AI4 inference
+  # - AI4 tools
+#libraries:   # required property, uncomment together with relevant items
+  # - TensorFlow
+  # - PyTorch
+  # - Keras
+  # - Scikit-learn
+  # - XGBoost
+  # - LightGBM
+  # - CatBoost
+  # - Other
+#data-type:   # optional, uncomment together with relevant items
+  # - Image
+  # - Text
+  # - Time Series
+  # - Tabular
+  # - Graph
+  # - Audio
+  # - Video
+  # - Other
+#resources:   # optional, uncomment together with relevant items
+  #inference:
+  #  cpu: 2
+  #  gpu: 0
+  #  memory_MB: 1000
+  #  gpu_memory_MB: 1000
+  #  gpu_compute_capability: 100.0
+  #  #  we use on purpose a unreasonable compute capability so that we can test the warning system
+  #  storage_MB: 1000  

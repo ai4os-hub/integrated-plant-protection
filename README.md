@@ -1,7 +1,7 @@
-# integrated_plant_protection
+# Integrated Plant Protection
 [![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/)
 
-Integrated Plant Protection
+A Torch model to classify plant.
 
 ## Usage
 
@@ -12,43 +12,65 @@ cd integrated-plant-protection
 pip install -e .
 deepaas-run --listen-ip 0.0.0.0
 ```
-### Directly from Docker Hub
 
-To run the Docker container directly from Docker Hub and start using the API simply run the following command:
+## Contributing
 
-```bash
-$ docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-protection
-```
+This module tries to enforce best practices by using [Black](https://github.com/psf/black)
+to format the code.
 
-This command will pull the Docker container from the Docker Hub [ai4oshub](https://hub.docker.com/u/ai4oshub/) repository and start the default command (`deepaas-run --listen-ip=0.0.0.0`).
+For an optimal development experience, we recommend installing the VScode extensions
+[Black](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
+and [Format on Auto Save](https://marketplace.visualstudio.com/items?itemName=BdSoftware.format-on-auto-save).
+Their configurations are automatically included in the [`.vscode`](./.vscode) folder.
+This will format the code during the automatic saves, though you can force formatting with
+`CTRL + Shift + I` (or `CTRL + S` to save).
 
-### Building the container
+To enable them only for this repository: after installing, click `Disable`,
+then click `Enable (workspace)`.
 
-If you want to build the container directly in your machine (because you want to modify the `Dockerfile` for instance) follow the instructions below:
-```bash
-git clone https://github.com/ai4os-hub/integrated-plant-protection
-cd integrated-plant-protection
-docker build -t ai4oshub/integrated-plant-protection .
-docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-protection
-```
+In the Black _global_ settings, we also recommend setting `black-formatter.showNotification = off`.
 
 ## Project structure
 ```
+│
+├── Dockerfile             <- Describes main steps on integration of DEEPaaS API and
+│                             integrated_plant_protection application in one Docker image
+│
+├── Jenkinsfile            <- Describes basic Jenkins CI/CD pipeline (see .sqa/)
+│
 ├── LICENSE                <- License file
 │
 ├── README.md              <- The top-level README for developers using this project.
 │
-├── requirements.txt       <- The requirements file for reproducing the analysis environment, e.g.
-│                             generated with `pip freeze > requirements.txt`
+├── VERSION                <- integrated_plant_protection version file
 │
-├── setup.py, setup.cfg    <- makes project pip installable (pip install -e .) so
-│                             integrated_plant_protection can be imported
+├── .sqa/                  <- CI/CD configuration files
 │
 ├── integrated_plant_protection    <- Source code for use in this project.
 │   │
 │   ├── __init__.py        <- Makes integrated_plant_protection a Python module
 │   │
-│   └── api.py             <- Main script for the integration with DEEP API
+│   ├── api.py             <- Main script for the integration with DEEPaaS API
+│   |
+│   ├── config.py          <- Configuration file to define Constants used across integrated_plant_protection
+│   │
+│   └── misc.py            <- Misc functions that were helpful accross projects
 │
-└── Jenkinsfile            <- Describes basic Jenkins CI/CD pipeline
+├── data/                  <- Folder to store the data
+│
+├── models/                <- Folder to store models
+│
+├── tests/                 <- Scripts to perfrom code testing
+|
+├── ai4-metadata.yml       <- Metadata information propagated to the AI4OS Hub
+│
+├── pyproject.toml         <- a configuration file used by packaging tools, so integrated_plant_protection
+│                             can be imported or installed with  `pip install -e .`
+│
+├── requirements.txt       <- The requirements file for reproducing the analysis environment, i.e.
+│                             contains a list of packages needed to make integrated_plant_protection work
+│
+├── requirements-test.txt  <- The requirements file for running code tests (see tests/ directory)
+│
+└── tox.ini                <- Configuration file for the tox tool used for testing (see .sqa/)
 ```

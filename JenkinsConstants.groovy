@@ -1,16 +1,20 @@
 import groovy.transform.Field
-// This file defines three variables to be used in the AI4OS-Hub Upstream Jenkins pipeline
-// base_cpu_tag : base docker image for Dockerfile, CPU version
-// base_gpu_tag : base docker image for Dockerfile, GPU version
+// This file defines variables to be used in the AI4OS-Hub Upstream Jenkins pipeline
 // dockerfile : what Dockerfile to use for building, can include path, e.g. docker/Dockerfile
-
-//@Field
-//def base_cpu_tag = '2.1.2'
-
-//@Field
-//def base_gpu_tag = '2.1.2-cuda12.1-cudnn8-runtime'
+// If *both*, CPU and GPU versions can be built:
+// base_cpu_tag : CPU tag for the base docker image (check your Dockerfile)
+// base_gpu_tag : GPU tag for the base docker image (check your Dockerfile)
 
 @Field
 def dockerfile = 'Dockerfile'
+
+
+@Field
+def base_cpu_tag = '2.7.1-cuda12.6-cudnn9-runtime'
+
+@Field
+def base_gpu_tag = '2.7.1-cuda'
+
+
 
 return this;

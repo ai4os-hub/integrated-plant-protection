@@ -136,13 +136,9 @@ GTAGS
 *.tar
 *.tbz2
 *.tgz
+*.zip
 *.pkl
 *.npz
 
 # Things specific to this project #
 ###################################
-venv*
-yarl*
-.flake8
-precommit.sh
-tmp
