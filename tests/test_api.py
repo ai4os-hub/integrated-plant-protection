@@ -34,7 +34,7 @@ class TestModelMethods(unittest.TestCase):
             "integrated_plant_protection".lower().replace("-", "_"),
         )
         self.assertEqual(
-            self.meta["author"].lower(), "Ignacio Heredia".lower()
+            self.meta["author"].lower(), "PSNC WODR".lower()
         )
         self.assertEqual(
             self.meta["license"].lower(),
