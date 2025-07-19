@@ -14,7 +14,6 @@ classifiers = [
     "Intended Audience :: System Administrators",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT",
 ]
 dynamic = ["version", "dependencies"]
 
