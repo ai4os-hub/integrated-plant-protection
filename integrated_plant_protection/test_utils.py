@@ -19,34 +19,50 @@ from integrated_plant_protection.data_utils import (
 )
 
 
-def _predict(model, model_unet, device, dataloader):
+def _predict(model, model_unet, device, dataloader,resnet):
     res_predictions = []
     res_probs = []
     model.train(False)
     with torch.no_grad():
         for batch in dataloader:
             data = batch.to(device)
-            if model_unet is None:
-                outputs = model(data)
+            if resnet == 0:
+                if model_unet is None:
+                    outputs = model(data)
+                else:
+                    print("\n\nUse preprocessing for predict")
+                    target_transform = transforms.Compose(
+                        [
+                            transforms.Resize((592, 592)),
+                            transforms.ToTensor(),
+                        ]
+                    )
+                    intersection_images = _inference_model_batch_optimal(
+                        model_unet, data, device, target_transform
+                    )
+                    outputs = model(intersection_images)
+                probs = torch.sigmoid(outputs).numpy(force=True)
+                predictions = [
+                    "sick" if prob.item() > 0.5 else "healthy" for prob in probs
+                ]
+                res_predictions.extend(predictions)
+                res_probs.extend(probs.flat)
             else:
-                print("\n\nUse preprocessing for predict")
-                target_transform = transforms.Compose(
-                    [
-                        transforms.Resize((592, 592)),
-                        transforms.ToTensor(),
-                    ]
-                )
-                intersection_images = _inference_model_batch_optimal(
-                    model_unet, data, device, target_transform
-                )
-                outputs = model(intersection_images)
-            probs = torch.sigmoid(outputs).numpy(force=True)
-            predictions = [
-                "sick" if prob.item() > 0.5 else "healthy" for prob in probs
-            ]
-            res_predictions.extend(predictions)
-            res_probs.extend(probs.flat)
-    return res_predictions, [float(p) for p in res_probs]
+                if resnet == 101:
+                    class_names = np.array(['cercospora', 'unaffected'])
+                elif resnet == 34:
+                    class_names = np.array(['uneffected', 'brown_rust'])
+                else:
+                    raise ValueError("Invalid resnet value")
+                
+                outputs = model(data)
+                predicted_indices = outputs.argmax(dim=1)
+                class_names_list = [class_names[idx] for idx in predicted_indices]
+                scores = outputs.softmax(dim=1).max(dim=1).values
+                formatted_scores = [round(score.item(), 3) for score in scores]
+                res_predictions.extend(class_names_list)
+                res_probs.extend(formatted_scores)
+            return res_predictions, [float(p) for p in res_probs]
 
 
 def predict(
@@ -58,6 +74,7 @@ def predict(
     image_size=512,
     batch_size=16,
     num_workers=0,
+    resnet=0,
 ):
 
     dataloader, _ = prepare_test_data(
@@ -66,8 +83,9 @@ def predict(
         image_size=image_size,
         batch_size=batch_size,
         num_workers=num_workers,
+        resnet=resnet,
     )
-    result = _predict(model, model_unet, device, dataloader)
+    result = _predict(model, model_unet, device, dataloader, resnet)
     return result
 
 

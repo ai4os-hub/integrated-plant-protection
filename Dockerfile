@@ -17,7 +17,7 @@ ARG tag=2.1.2-cuda12.1-cudnn8-runtime
 FROM pytorch/pytorch:${tag}
 
 LABEL maintainer='PSNC WODR'
-LABEL version='0.0.1'
+LABEL version='0.2.0'
 # Integrated Plant Protection
 
 # What user branch to clone [!]

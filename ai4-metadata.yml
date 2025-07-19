@@ -14,12 +14,11 @@ description: |-
   The same scheme is then used for prediction, with the difference that preprocessing is done immediately before GPU inference.
 dates:
   created: '2023-12-20'
-  updated: '2024-08-12'
+  updated: '2025-07-18'
 links:
   source_code: https://github.com/ai4os-hub/integrated-plant-protection
   docker_image: ai4oshub/integrated-plant-protection
-  ai4_template: ai4-template/1.9.9
-  dataset: https://zenodo.org/records/14707857
+  ai4_template: ai4-template/2.0.0
   dataset: https://zenodo.org/records/15873360
 tags:
   - deep learning

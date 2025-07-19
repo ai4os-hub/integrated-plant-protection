@@ -1,7 +1,8 @@
 # integrated_plant_protection
-[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/)
 
-Integrated Plant Protection
+[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/integrated-plant-protection/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/integrated-plant-protection/job/main/)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Usage
 
@@ -34,21 +35,38 @@ docker run -ti -p 5000:5000 -p 6006:6006 -p 8888:8888 ai4oshub/integrated-plant-
 
 ## Project structure
 ```
+│
+├── Dockerfile             <- Describes main steps on integration of DEEPaaS API and
+│                             integrated_plant_protection application in one Docker image
+│
+├── Jenkinsfile            <- Describes basic Jenkins CI/CD pipeline (see .sqa/)
+│
 ├── LICENSE                <- License file
 │
 ├── README.md              <- The top-level README for developers using this project.
 │
-├── requirements.txt       <- The requirements file for reproducing the analysis environment, e.g.
-│                             generated with `pip freeze > requirements.txt`
-│
-├── setup.py, setup.cfg    <- makes project pip installable (pip install -e .) so
-│                             integrated_plant_protection can be imported
+├── .sqa/                  <- CI/CD configuration files
 │
 ├── integrated_plant_protection    <- Source code for use in this project.
 │   │
 │   ├── __init__.py        <- Makes integrated_plant_protection a Python module
 │   │
-│   └── api.py             <- Main script for the integration with DEEP API
+│   ├── api.py             <- Main script for the integration with DEEPaaS API
+│   │
+│   └── misc.py            <- Misc functions that were helpful accross projects
 │
-└── Jenkinsfile            <- Describes basic Jenkins CI/CD pipeline
+├── data/                  <- Folder to store the data
+│
+├── models/                <- Folder to store models
+│
+├── tests/                 <- Scripts to perfrom code testing
+|
+├── metadata.json          <- Defines information propagated to the AI4OS Hub
+│
+├── requirements.txt       <- The requirements file for reproducing the analysis environment, e.g.
+│                             generated with `pip freeze > requirements.txt`
+├── requirements-test.txt  <- The requirements file for running code tests (see tests/ directory)
+│
+└── setup.py, setup.cfg    <- makes project pip installable (pip install -e .) so
+                              integrated_plant_protection can be imported
 ```
