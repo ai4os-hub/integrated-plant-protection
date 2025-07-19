@@ -8,14 +8,15 @@ authors = [{ name = "PSNC WODR", email = "support@kiwi.psnc.pl" }]
 description = "Integrated Plant Protection"
 readme = "README.md"
 requires-python = ">=3.8"
-license = { text = "MIT License" }
+license = { text = "MIT" }
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT",
 ]
-dynamic = ["version", "dependencies"]
+dynamic = ["dependencies"]
 
 [project.urls]
 "Homepage" = "https://github.com/ai4os-hub/integrated-plant-protection"

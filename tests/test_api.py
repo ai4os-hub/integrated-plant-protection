@@ -38,7 +38,7 @@ class TestModelMethods(unittest.TestCase):
         )
         self.assertEqual(
             self.meta["license"].lower(),
-            "MIT License".lower(),
+            "MIT".lower(),
         )
 
 
