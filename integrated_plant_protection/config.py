@@ -15,7 +15,7 @@ import yaml
 
 
 # Get AI model metadata from pyproject.toml
-API_NAME = "ai4os_demo_app"
+API_NAME = "integrated_plant_protection"
 PACKAGE_METADATA = metadata.metadata(API_NAME)  # .json
 
 # Get ai4-metadata.yaml metadata

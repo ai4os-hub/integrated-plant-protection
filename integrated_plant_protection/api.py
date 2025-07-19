@@ -1,29 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Functions to integrate your model with the DEEPaaS API.
-It's usually good practice to keep this file minimal, only performing
-the interfacing tasks. In this way you don't mix your true code with
-DEEPaaS code and everything is more modular. That is, if you need to write
-the predict() function in api.py, you would import your true predict function
-and call it from here (with some processing / postprocessing in between
-if needed).
-For example:
-
-    import mycustomfile
-
-    def predict(**kwargs):
-        args = preprocess(kwargs)
-        resp = mycustomfile.predict(args)
-        resp = postprocess(resp)
-        return resp
-
-To start populating this file, take a look at the docs [1] and at an exemplar
-module [2].
-
-[1]: https://docs.ai4os.eu/
-[2]: https://github.com/ai4os-hub/ai4os-demo-app
-"""
-
 import ast
 import base64
 import json
@@ -101,7 +75,7 @@ def train(**kwargs):
     mlflow_vars = [v in os.environ for v in ["MLFLOW_TRACKING_USERNAME", "MLFLOW_TRACKING_PASSWORD", "MLFLOW_TRACKING_URI"]]
     use_mlflow = all(mlflow_vars)
     if use_mlflow:
-        mlflow.set_experiment(experiment_name="ai4os-demo-app")
+        mlflow.set_experiment(experiment_name="integrated-plant-protection")
         _ = mlflow.start_run(run_name="test run")
         mlflow.log_params({"epochs": kwargs["epoch_num"]})
 

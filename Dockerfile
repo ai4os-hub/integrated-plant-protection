@@ -15,8 +15,8 @@ ARG tag=2.16.1
 # Base image, e.g. tensorflow/tensorflow:2.9.1
 FROM tensorflow/tensorflow:${tag}
 
-LABEL maintainer='Ignacio Heredia'
-LABEL version='0.0.1'
+LABEL maintainer='PSNC WODR'
+LABEL version='0.2.0'
 # A demo application to test (eg. DEEPaaS testing). Does not contain any AI code.
 
 # What user branch to clone [!]
@@ -61,13 +61,10 @@ RUN git clone https://github.com/ai4os/deep-start /srv/.deep-start && \
 # Necessary for the Jupyter Lab terminal
 ENV SHELL /bin/bash
 
-# # Test local installation
-# COPY . /srv/ai4os-demo-app
-# RUN pip3 install --no-cache-dir -e /srv/ai4os-demo-app
 
 # Install user app
-RUN git clone -b $branch https://github.com/ai4os-hub/ai4os-demo-app && \
-    cd  ai4os-demo-app && \
+RUN git clone -b $branch https://github.com/ai4os-hub/integrated-plant-protection && \
+    cd integrated-plant-protection && \
     pip3 install --no-cache-dir -e . && \
     cd ..
 
