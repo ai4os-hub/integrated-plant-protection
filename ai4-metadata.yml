@@ -11,14 +11,13 @@ description: |-
   
   Images are preprocessed with normalization and resizing to 256x256 before being fed to the models.
   For data augmentation, training images are randomly cropped and flipped horizontally.
-  The output layer of each classifier is adjusted to the number of classes
+  The output layer of each classifier consists two neurons.
   We have `brown_rust`,`uneffected` classes for rye and `cercospora`,`uneffected` classes for beet.
 
-  The cross-entropy loss function guides the training of machine learning models by minimizing the difference between predicted and actual values
+  Cross-entropy loss is the objective function used to guide model training in classification tasks
   An SGD optimizer with momentum is used to update the model weights.
   A learning rate scheduler reduces the learning rate by a factor of 0.1 every 7 epochs.
   The training process lasts for 20 epochs per model.
-  
 dates:
   created: '2023-12-20'
   updated: '2025-07-18'
