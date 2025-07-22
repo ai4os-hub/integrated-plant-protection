@@ -11,7 +11,7 @@ description: |-
   
   Images are preprocessed with normalization and resizing to 256x256 before being fed to the models.
   For data augmentation, training images are randomly cropped and flipped horizontally.
-  The output layer of each classifier is adjusted to the number of classes
+  The output layer of each classifier consists two neurons.
   We have `brown_rust`,`uneffected` classes for rye and `cercospora`,`uneffected` classes for beet.
 
   Cross-entropy loss is the objective function used to guide model training in classification tasks
