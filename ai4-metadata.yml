@@ -2,16 +2,23 @@ metadata_version: 2.0.0
 title: Integrated Plant Protection
 summary: A Torch model to classify plants.
 description: |-
-  The module contains 4 trained models based on CNN architecture with reduced network capacity due to the size of datasets.
-  The pipeline is implemented in [PyTorch](https://pytorch.org/).
+  The module contains 2 fine-tuned models.
+  Fine-tunning pipeline is implemented in [PyTorch](https://pytorch.org/).
+  Convolutional Neural Networks (CNN) serve as the backbone architecture for classifiers.
   
-  For rye, the first classifier with resnet architecture is `rye-34` and for beets it is `beet-101`.
-  In the second approach, the impact of using preprocessing before the classifier was checked.
-  For this purpose, masks were collected and models were trained with U-Net architecture for segmentation. `rye-1` for rye and `beet-1` for beet.
-  Two more classifiers, namely `rye-7` and `beet-54`, were used to preprocess the corresponding models.
-  It was possible to train new models without and with preprocessing.
+  For rye images, pretrained `ResNet-34` model was used and named `rye-34`.
+  For beet images, pretrained `ResNet-101` model was used and named `beet-101`.
   
-  The same scheme is then used for prediction, with the difference that preprocessing is done immediately before GPU inference.
+  Images are preprocessed with normalization and resizing to 256x256 before being fed to the models.
+  For data augmentation, training images are randomly cropped and flipped horizontally.
+  The output layer of each classifier is adjusted to the number of classes
+  We have `brown_rust`,`uneffected` classes for rye and `cercospora`,`uneffected` classes for beet.
+
+  The cross-entropy loss function guides the training of machine learning models by minimizing the difference between predicted and actual values
+  An SGD optimizer with momentum is used to update the model weights.
+  A learning rate scheduler reduces the learning rate by a factor of 0.1 every 7 epochs.
+  The training process lasts for 20 epochs per model.
+  
 dates:
   created: '2023-12-20'
   updated: '2025-07-18'
