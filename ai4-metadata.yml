@@ -13,6 +13,9 @@ description: |-
   For data augmentation, training images are randomly cropped and flipped horizontally.
   The output layer of each classifier is adjusted to the number of classes
   We have `brown_rust`,`uneffected` classes for rye and `cercospora`,`uneffected` classes for beet.
+  Result of the model consists of tensor of shape (batch_size, num_classes) containing the predicted classes logits.
+  The API returns the predicted class with the highest logit value for each input image along with the corresponding probability of the predicted class.
+
 
   Cross-entropy loss is the objective function used to guide model training in classification tasks
   An SGD optimizer with momentum is used to update the model weights.
